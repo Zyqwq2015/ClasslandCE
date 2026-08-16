@@ -100,6 +100,9 @@ public partial class App
         services.AddSingleton<IAudioService, AudioService>();
         services.AddSingleton<ITutorialService, TutorialService>();
         services.AddSingleton<IRefreshingService, RefreshingService>();
+        // Classland CE
+        services.AddSingleton<VoiceAssistantService>();
+        services.AddHostedService<VoiceAssistantService>(x => x.GetRequiredService<VoiceAssistantService>());
         // ViewModels
         services.AddTransient<ProfileSettingsViewModel>();
         services.AddTransient<DevPortalViewModel>();
@@ -129,6 +132,7 @@ public partial class App
         services.AddTransient<UpdateSettingsPageViewModel>();
         services.AddTransient<DebugPageViewModel>();
         services.AddTransient<RefreshingSettingsViewModel>();
+        services.AddTransient<ClasslandCESettingsViewModel>();
         // Views
         services.AddTransient<ITopmostEffectPlayer>(x => x.GetRequiredService<TopmostEffectWindow>());
         services.AddSingleton<MainWindow>();
@@ -182,6 +186,7 @@ public partial class App
         services.AddSettingsPage<ManagementCredentialsSettingsPage>();
         services.AddSettingsPage<ManagementPolicySettingsPage>();
         services.AddSettingsPage<ErrorSettingsPage>();
+        services.AddSettingsPage<ClasslandCESettingsPage>();
         // 主界面组件
         services.AddComponent<TextComponent, TextComponentSettingsControl>();
         services.AddComponent<SeparatorComponent>();

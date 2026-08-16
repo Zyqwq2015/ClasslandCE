@@ -2652,4 +2652,187 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
             OnPropertyChanged();
         }
     }
+
+    // ===== Classland CE 增强设置 =====
+
+    private bool _ceIsVoiceAssistantEnabled = true;
+    private string _ceSpeechTemplate = "下节课是：{subject}，{teacher}{startTime}开始。";
+    private bool _ceIsRepeatSpeechEnabled = false;
+    private int _ceRepeatSpeechIntervalSeconds = 30;
+    private int _ceRepeatSpeechMaxCount = 3;
+    private bool _ceIsQuickTimeLayoutEnabled = true;
+    private int _ceQuickTimeLayoutStartHour = 8;
+    private int _ceQuickTimeLayoutStartMinute = 0;
+    private int _ceQuickTimeLayoutDurationMinutes = 40;
+    private int _ceQuickTimeLayoutBreakMinutes = 10;
+    private int _ceQuickTimeLayoutClassCount = 8;
+    private bool _ceIsAutoStartEnabled = false;
+
+    /// <summary>
+    /// 是否启用语音助手（Classland CE）
+    /// </summary>
+    public bool CeIsVoiceAssistantEnabled
+    {
+        get => _ceIsVoiceAssistantEnabled;
+        set
+        {
+            if (value == _ceIsVoiceAssistantEnabled) return;
+            _ceIsVoiceAssistantEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 课前播报模板，支持 {subject} {teacher} {startTime} {endTime} {location} {subjectIndex} 占位符
+    /// </summary>
+    public string CeSpeechTemplate
+    {
+        get => _ceSpeechTemplate;
+        set
+        {
+            if (value == _ceSpeechTemplate) return;
+            _ceSpeechTemplate = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 是否启用重复播报
+    /// </summary>
+    public bool CeIsRepeatSpeechEnabled
+    {
+        get => _ceIsRepeatSpeechEnabled;
+        set
+        {
+            if (value == _ceIsRepeatSpeechEnabled) return;
+            _ceIsRepeatSpeechEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 重复播报间隔（秒）
+    /// </summary>
+    public int CeRepeatSpeechIntervalSeconds
+    {
+        get => _ceRepeatSpeechIntervalSeconds;
+        set
+        {
+            if (value == _ceRepeatSpeechIntervalSeconds) return;
+            _ceRepeatSpeechIntervalSeconds = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 重复播报最大次数
+    /// </summary>
+    public int CeRepeatSpeechMaxCount
+    {
+        get => _ceRepeatSpeechMaxCount;
+        set
+        {
+            if (value == _ceRepeatSpeechMaxCount) return;
+            _ceRepeatSpeechMaxCount = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 是否启用快速时间表生成
+    /// </summary>
+    public bool CeIsQuickTimeLayoutEnabled
+    {
+        get => _ceIsQuickTimeLayoutEnabled;
+        set
+        {
+            if (value == _ceIsQuickTimeLayoutEnabled) return;
+            _ceIsQuickTimeLayoutEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 快速时间表 — 第一节课开始小时
+    /// </summary>
+    public int CeQuickTimeLayoutStartHour
+    {
+        get => _ceQuickTimeLayoutStartHour;
+        set
+        {
+            if (value == _ceQuickTimeLayoutStartHour) return;
+            _ceQuickTimeLayoutStartHour = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 快速时间表 — 第一节课开始分钟
+    /// </summary>
+    public int CeQuickTimeLayoutStartMinute
+    {
+        get => _ceQuickTimeLayoutStartMinute;
+        set
+        {
+            if (value == _ceQuickTimeLayoutStartMinute) return;
+            _ceQuickTimeLayoutStartMinute = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 快速时间表 — 每节课时长（分钟）
+    /// </summary>
+    public int CeQuickTimeLayoutDurationMinutes
+    {
+        get => _ceQuickTimeLayoutDurationMinutes;
+        set
+        {
+            if (value == _ceQuickTimeLayoutDurationMinutes) return;
+            _ceQuickTimeLayoutDurationMinutes = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 快速时间表 — 课间休息时长（分钟）
+    /// </summary>
+    public int CeQuickTimeLayoutBreakMinutes
+    {
+        get => _ceQuickTimeLayoutBreakMinutes;
+        set
+        {
+            if (value == _ceQuickTimeLayoutBreakMinutes) return;
+            _ceQuickTimeLayoutBreakMinutes = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 快速时间表 — 每天几节课
+    /// </summary>
+    public int CeQuickTimeLayoutClassCount
+    {
+        get => _ceQuickTimeLayoutClassCount;
+        set
+        {
+            if (value == _ceQuickTimeLayoutClassCount) return;
+            _ceQuickTimeLayoutClassCount = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 是否开机自启
+    /// </summary>
+    public bool CeIsAutoStartEnabled
+    {
+        get => _ceIsAutoStartEnabled;
+        set
+        {
+            if (value == _ceIsAutoStartEnabled) return;
+            _ceIsAutoStartEnabled = value;
+            OnPropertyChanged();
+        }
+    }
 }
