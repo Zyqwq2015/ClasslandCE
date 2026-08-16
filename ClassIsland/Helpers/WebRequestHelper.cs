@@ -1,0 +1,102 @@
+﻿using System;
+using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using ClassIsland.Core.Converters;
+using ClassIsland.Shared;
+using ClassIsland.Shared.Helpers;
+
+using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Security;
+using PhainonDistributionCenter.Shared.Models.Api.Responses;
+using Sentry;
+
+namespace ClassIsland.Helpers;
+
+public class WebRequestHelper(Uri? baseUri = null, bool phainon = false)
+{
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        Converters =
+        {
+            new ColorHexJsonConverter()
+        }
+    };
+    private HttpClient HttpClient { get; } = new(new SentryHttpMessageHandler())
+    {
+        BaseAddress = baseUri
+    };
+
+    private const int MaxRetries = 7;
+
+    public static WebRequestHelper Default { get; } = new();
+
+    public async Task<T> GetJson<T>(Uri uri, int retries = 3, CancellationToken? cancellationToken = null,
+        bool verifySign = false, string? publicKey = null) where T : class
+    {
+        var logger = IAppHost.TryGetService<ILogger<WebRequestHelper>>();
+        cancellationToken ??= CancellationToken.None;
+        if (retries > MaxRetries)
+        {
+            throw new InvalidOperationException("重试次数超过规定最大重试次数。");
+        }
+        logger?.LogTrace("Json GET: {}", uri);
+        var retryTime = TimeSpan.FromSeconds(1);
+        Exception? innerException = null;
+        for (var i = 0; i <= retries; i++)
+        {
+            try
+            {
+                var data = await HttpClient.GetStringAsync(uri, cancellationToken.Value);
+                if (verifySign && publicKey != null)
+                {
+                    var signUri = new UriBuilder(uri);
+                    signUri.Path += ".sig";
+                    var sign = await HttpClient.GetByteArrayAsync(signUri.Uri, CancellationToken.None);
+                    var valid = DetachedSignatureProcessor.VerifyDetachedSignature(data, sign, publicKey);
+                    if (!valid)
+                    {
+                        throw new GeneralSecurityException("数据签名校验失败。");
+                    }
+                }
+
+                T? r;
+                if (phainon)
+                {
+                    var phainonResult = JsonSerializer.Deserialize<Result<T>>(data, JsonOptions);
+                    phainonResult?.VerifySuccess();
+                    r = phainonResult?.Content;
+                }
+                else
+                {
+                    r = JsonSerializer.Deserialize<T>(data, JsonOptions);
+                }
+                return r ?? throw new InvalidOperationException("Json.Deserialize returned null value.");
+            }
+            catch (Exception ex)
+            {
+                innerException = ex;
+                logger?.LogWarning(ex, "Json GET 请求失败（第 {} 次重试）{}", i, uri);
+                retryTime *= 2;
+                var realRetryTime = retryTime + retryTime * RandomNumberGenerator.GetInt32(0, 500) / 1000;
+                if (i < retries)
+                {
+                    await Task.Run(() => cancellationToken.Value.WaitHandle.WaitOne(realRetryTime), cancellationToken.Value);
+                }
+            }
+        }
+
+        throw new Exception($"在 {retries} 次重试后无法完成对 {uri} 的GET请求：{innerException?.Message}", innerException);
+    }
+
+    public async Task<T> SaveJson<T>(Uri uri, string path, int retries = 3, CancellationToken? cancellationToken = null,
+        bool verifySign = false, string? publicKey = null) where T : class
+    {
+        var j = await this.GetJson<T>(uri, retries, cancellationToken, verifySign, publicKey);
+        ConfigureFileHelper.SaveConfig(path, j);
+        return j;
+    }
+    
+}

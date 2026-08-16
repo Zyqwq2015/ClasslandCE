@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">net8.0-windows;net472</TargetFrameworks>
+    <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">net8.0-windows</TargetFrameworks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+	  <LangVersion>12</LangVersion>
+	  <Configurations>Debug;Release;Debug_MSIX;Release_MSIX</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ClassIsland.Shared.IPC\ClassIsland.Shared.IPC.csproj" />
+    <ProjectReference Include="..\..\ClassIsland.Shared\ClassIsland.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

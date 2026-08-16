@@ -1,0 +1,644 @@
+<ci:SettingsPageBase xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:settingPages="clr-namespace:ClassIsland.Views.SettingPages"
+                  xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                  xmlns:registry="clr-namespace:ClassIsland.Core.Services.Registry;assembly=ClassIsland.Core"
+                  xmlns:components="clr-namespace:ClassIsland.Core.Models.Components;assembly=ClassIsland.Core"
+                  xmlns:controls="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+                  xmlns:converters="clr-namespace:ClassIsland.Converters"
+                  xmlns:settingsPages="clr-namespace:ClassIsland.ViewModels.SettingsPages"
+                  xmlns:models="clr-namespace:ClassIsland.Models"
+                  xmlns:editMode="clr-namespace:ClassIsland.Controls.EditMode"
+                  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                  x:Class="ClassIsland.Views.SettingPages.ComponentsSettingsPage"
+                  d:DataContext="{d:DesignInstance settingPages:ComponentsSettingsPage}">
+    <ci:SettingsPageBase.Styles>
+        <Style Selector="ListBox.drag-source ListBoxItem">
+            <Setter Property="Interaction.Behaviors">
+                <BehaviorCollectionTemplate>
+                    <BehaviorCollection>
+                        <ci:AdvancedManagedContextDragBehavior HorizontalDragThreshold="3" VerticalDragThreshold="3"/>
+                    </BehaviorCollection>
+                </BehaviorCollectionTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ListBox.component-listBox">
+            <Style.Resources>
+                <MenuFlyout x:Key="ComponentsOperationMenuFlyout">
+                    <MenuItem Header="向上移动一行" Icon="{ci:FluentIcon &#xe197;}" 
+                              Classes="main-only"
+                              Command="{Binding $parent[settingPages:ComponentsSettingsPage].MoveComponentToPreviousLineCommand}"
+                              CommandParameter="{Binding}"/>
+                    <MenuItem Header="向下移动一行" Icon="{ci:FluentIcon &#xe0cb;}"
+                              Classes="main-only"
+                              Command="{Binding $parent[settingPages:ComponentsSettingsPage].MoveComponentToNextLineCommand}"
+                              CommandParameter="{Binding}"/>
+                    <MenuItem Header="移动到选中的容器" Icon="{ci:FluentIcon &#xe280;}"
+                              IsEnabled="{Binding $parent[settingPages:ComponentsSettingsPage].ViewModel.IsComponentChildrenViewOpen}"
+                              Classes="main-only"
+                              Command="{Binding $parent[settingPages:ComponentsSettingsPage].MoveToCurrentContainerComponentCommand}"
+                              CommandParameter="{Binding}"/>
+                    <MenuItem Header="从容器组件移出" Icon="{ci:FluentIcon &#xe286;}"
+                              Classes="children-only"
+                              Command="{Binding $parent[settingPages:ComponentsSettingsPage].MoveComponentsToMainLinesCommand}"
+                              CommandParameter="{Binding}"/>
+                    <Separator/>
+                    <MenuItem Header="包裹到新容器" Icon="{ci:FluentIcon &#xe27e;}"
+                              ItemsSource="{Binding $parent[settingPages:ComponentsSettingsPage].ViewModel.ContainerComponents}">
+                        <MenuItem.ItemContainerTheme>
+                            <ControlTheme TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+                                <Setter Property="Header" Value="{Binding Name}"/>
+                                <Setter Property="Icon">
+                                    <Template>
+                                        <Border>
+                                            <controls:IconSourceElement IconSource="{Binding IconSource}"
+                                                                        Height="14" Width="14"
+                                                                        TextElement.FontSize="14"
+                                                                        Classes="repair-fontsize"/>
+                                        </Border>
+                                    </Template>
+                                </Setter>
+                                <Setter Property="Command" Value="{Binding $parent[settingPages:ComponentsSettingsPage].CreateContainerComponentCommand}"/>
+                                <Setter Property="CommandParameter" Value="{Binding}"/>
+                            </ControlTheme>
+                        </MenuItem.ItemContainerTheme>
+                    </MenuItem>
+                    <MenuItem Header="创建副本" Icon="{ci:FluentIcon &#xeeb9;}"
+                              Command="{Binding $parent[settingPages:ComponentsSettingsPage].DuplicateComponentCommand}"
+                              CommandParameter="{Binding}"/>
+                </MenuFlyout>
+            </Style.Resources>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="ItemTemplate">
+                <DataTemplate DataType="{x:Type components:ComponentSettings}">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <ci:TouchDragThumb Margin="-4 0 -2 0" IsCompact="True"/>
+                        <controls:IconSourceElement IconSource="{Binding AssociatedComponentInfo.IconSource}"
+                                                    VerticalAlignment="Center" Height="14" Width="14"
+                                                    ClipToBounds="False"
+                                                    TextElement.FontSize="14"
+                                                    Classes="repair-fontsize"/>
+                        <TextBlock Text="{Binding AssociatedComponentInfo.Name}"
+                                   VerticalAlignment="Center" />
+                        <Button Content="{ci:FluentIcon &#xebac;}"
+                                VerticalAlignment="Center"
+                                ToolTip.Tip="更多选项…"
+                                Flyout="{StaticResource ComponentsOperationMenuFlyout}"
+                                Theme="{StaticResource TransparentButton}"
+                                IsVisible="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}">
+                        </Button>
+                        <Button Content="{ci:FluentIcon &#xEC30;}"
+                                VerticalAlignment="Center"
+                                ToolTip.Tip="查看子组件"
+                                Click="ButtonShowChildrenComponents_OnClick"
+                                Theme="{StaticResource TransparentButton}">
+                            <Button.IsVisible>
+                                <MultiBinding
+                                    Converter="{StaticResource BooleanAndExpressionMultiConverter}">
+                                    <Binding Path="IsSelected"
+                                             RelativeSource="{RelativeSource FindAncestor, AncestorType=ListBoxItem}" />
+                                    <Binding Path="AssociatedComponentInfo.IsComponentContainer" />
+                                </MultiBinding>
+                            </Button.IsVisible>
+                        </Button>
+                        <Button
+                            Foreground="IndianRed"
+                            VerticalAlignment="Center"
+                            ToolTip.Tip="删除"
+                            IsVisible="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}"
+                            Click="ButtonRemoveSelectedComponent_OnClick"
+                            Theme="{StaticResource TransparentButton}"
+                            Content="{ci:FluentIcon &#xE61D;}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Setter>
+            <Setter Property="ItemsPanel">
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                </ItemsPanelTemplate>
+            </Setter>
+            <Setter Property="ItemContainerTheme">
+                <ControlTheme TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Setter Property="Padding" Value="8 0"/>
+                    <Setter Property="MinWidth" Value="0"/>
+                    <Setter Property="VerticalAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                    <Setter Property="ContextFlyout" Value="{StaticResource ComponentsOperationMenuFlyout}"/>
+                </ControlTheme>
+            </Setter>
+            
+            <Style Selector="^#ListBoxComponentsChildren MenuItem.main-only">
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
+            <Style Selector="^:not(#ListBoxComponentsChildren) MenuItem.children-only">
+                <Setter Property="IsVisible" Value="False"/>
+            </Style>
+            <Style Selector="^ ListBoxItem">
+                <Setter Property="(Interaction.Behaviors)">
+                    <BehaviorCollectionTemplate>
+                        <BehaviorCollection>
+                            <ci:AdvancedManagedContextDragBehavior HorizontalDragThreshold="3" VerticalDragThreshold="3">
+                                <ci:AdvancedManagedContextDragBehavior.Context>
+                                    <MultiBinding Converter="{x:Static editMode:EditableComponentsListBoxDragData.Create}">
+                                        <Binding />
+                                        <Binding  Path="$parent[ListBox].ItemsSource"/>
+                                    </MultiBinding>
+                                </ci:AdvancedManagedContextDragBehavior.Context>
+                            </ci:AdvancedManagedContextDragBehavior>
+                        </BehaviorCollection>
+                    </BehaviorCollectionTemplate>
+                </Setter>
+            </Style>
+        </Style>
+    </ci:SettingsPageBase.Styles>
+    <ci:SettingsPageBase.Resources>
+        <ci:HorizontalAlignmentToIntConverter x:Key="HorizontalAlignmentToIntConverter" />
+        
+        <ci:RulesetControl x:Key="RulesetControl" Classes="in-drawer"/>
+    </ci:SettingsPageBase.Resources>
+    <Grid Margin="12 0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition MinHeight="43.2" MaxHeight="250"
+                           Height="64"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- ROW 1 组件方案管理 -->
+        <Grid Grid.Row="1" MaxWidth="{StaticResource SettingsContainerWidth}" ColumnDefinitions="*,Auto">
+            <TextBlock Text="以下组件将显示在主界面上，从组件库拖动组件以添加组件。" 
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Left"/>
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="2"
+                        VerticalAlignment="Center">
+                <ci:Field Label="配置方案">
+                    <ComboBox ItemsSource="{Binding ViewModel.ComponentsService.ComponentConfigs}"
+                              MinWidth="150"
+                              MaxWidth="300"
+                              SelectedItem="{Binding ViewModel.SettingsService.Settings.CurrentComponentConfig, Converter={StaticResource PreventNullConverter}}" />
+                </ci:Field>
+                <Button Content="{ci:FluentIcon &#xE0B5;}"
+                        ToolTip.Tip="刷新"
+                        VerticalAlignment="Center"
+                        Click="ButtonRefresh_OnClick"
+                        Theme="{StaticResource TransparentButton}"/>
+                <Button Content="{ci:FluentIcon &#xE00D;}"
+                        ToolTip.Tip="新建…"
+                        VerticalAlignment="Center"
+                        Click="ButtonCreateConfig_OnClick"
+                        Theme="{StaticResource TransparentButton}"/>
+                <Button Content="{ci:FluentIcon &#xE88D;}"
+                        ToolTip.Tip="打开配置文件夹…"
+                        VerticalAlignment="Center"
+                        Click="ButtonOpenConfigFolder_OnClick"
+                        Theme="{StaticResource TransparentButton}"/>
+            </StackPanel>
+        </Grid>
+        
+        <ListBox Grid.Row="2" ItemsSource="{Binding ViewModel.ComponentsService.CurrentComponents.Lines}"
+                 SelectedItem="{Binding ViewModel.SelectedMainWindowLineSettings}"
+                 x:Name="ListBoxMainWindowLines"
+                 Margin="-12 0">
+            <ListBox.ItemContainerTheme>
+                <ControlTheme TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                    <Setter Property="Interaction.Behaviors">
+                        <BehaviorCollectionTemplate>
+                            <BehaviorCollection>
+                                <ci:AdvancedItemDragBehavior Orientation="Vertical"
+                                                             HorizontalDragThreshold="33550336"
+                                                             AllowDragFromDragThumbOnly="True"/>
+                            </BehaviorCollection>
+                        </BehaviorCollectionTemplate>
+                    </Setter>
+                </ControlTheme>
+            </ListBox.ItemContainerTheme>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="Auto, *, Auto" Height="40">
+                        <ci:TouchDragThumb Grid.Column="0" Width="20" IsExplicitVisible="True"
+                                           IsCompact="True"
+                                           Classes="in-listbox"/>
+                        
+                        <ListBox Grid.Column="1" ItemsSource="{Binding Children}" 
+                                 SelectionChanged="SelectorComponents_OnSelectionChanged"
+                                 Tag="{Binding}"
+                                 AttachedToVisualTree="ListBoxMainWindowLineSettings_OnAttachedToVisualTree"
+                                 DetachedFromVisualTree="ListBoxMainWindowLineSettings_OnDetachedFromVisualTree"
+                                 Classes="component-listBox">
+                            <Interaction.Behaviors>
+                                <BehaviorCollection>
+                                    <ManagedContextDropBehavior 
+                                        Handler="{Binding $parent[settingPages:ComponentsSettingsPage].ViewModel.DropHandler}"
+                                        Context="{Binding Children}"/>
+                                </BehaviorCollection>
+                            </Interaction.Behaviors>
+                        </ListBox> 
+
+                        <Border Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                Padding="4"
+                                CornerRadius="4"
+                                Background="{DynamicResource AcrylicBackgroundFillColorBaseBrush}"
+                                IsVisible="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}">
+                            <StackPanel Orientation="Horizontal"
+                                        VerticalAlignment="Center"
+                                        Spacing="2">
+                                <ToggleButton
+                                    IsChecked="{Binding IsMainLine}"
+                                    Click="ToggleButtonIsMainLine_OnIsCheckedChanged"
+                                    VerticalAlignment="Center"
+                                    ToolTip.Tip="此行是主要行"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Content="{ci:FluentIcon &#xE994;}" />
+                                <ToggleButton
+                                    IsChecked="{Binding IsNotificationEnabled}"
+                                    VerticalAlignment="Center"
+                                    ToolTip.Tip="此行可以显示提醒"
+                                    Click="ToggleButtonIsNotificationEnabled_OnIsCheckedChanged"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Content="{ci:FluentIcon &#xE02B;}" />
+                                <Button
+                                    VerticalAlignment="Center"
+                                    ToolTip.Tip="在下方插入一行"
+                                    Click="ButtonCreateMainWindowLine_OnClick"
+                                    Theme="{StaticResource TransparentButton}"
+                                    Content="{ci:FluentIcon &#xE00D;}" />
+                                <Button
+                                    Foreground="IndianRed"
+                                    VerticalAlignment="Center"
+                                    ToolTip.Tip="删除"
+                                    Click="ButtonRemoveSelectedMainWindowLine_OnClick"
+                                    Theme="{StaticResource TransparentButton}"
+                                    Content="{ci:FluentIcon &#xE61D;}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+        <GridSplitter Grid.Row="3" Margin="-12 0" Height="2"/>
+        
+        <!-- ROW 4 组件设置 -->
+        <Grid Grid.Row="4" HorizontalAlignment="Stretch"
+              Margin="0 4 0 0"
+              RowDefinitions="Auto, *">
+            <Border Grid.Row="0" CornerRadius="4" ClipToBounds="True"
+                    IsVisible="{Binding ViewModel.IsComponentChildrenViewOpen}"
+                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    Background="{DynamicResource CardBackgroundFillColorDefaultBrush}">
+                <Grid RowDefinitions="Auto, Auto">
+                    <Border Grid.Row="0" Padding="8"
+                            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="0 0 0 1">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <Button Grid.Column="0" Content="{ci:FluentIcon &#xE0C7;}"
+                                    Margin="0 -16 4 -16"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    ToolTip.Tip="返回上一层级"
+                                    IsVisible="{Binding ViewModel.CanChildrenNavigateBack, Mode=OneWay}"
+                                    Click="ButtonNavigateUp_OnClick"
+                                    Theme="{StaticResource TransparentButton}" />
+                            <TextBlock VerticalAlignment="Center"
+                                       Grid.Column="1"
+                                       HorizontalAlignment="Left">
+                                <Run Text="此组件的子组件" />
+                            </TextBlock>
+                            <Button Grid.Column="1" Content="{ci:FluentIcon &#xE671;}"
+                                    Margin="4 -16 -4 -16"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    ToolTip.Tip="关闭"
+                                    Click="ButtonChildrenViewClose_OnClick"
+                                    Theme="{StaticResource TransparentButton}" />
+                        </Grid> 
+                    </Border>
+                    <ListBox Grid.Row="1" ItemsSource="{Binding ViewModel.SelectedComponentContainerChildren}"
+                             Classes="component-listBox"
+                             x:Name="ListBoxComponentsChildren"
+                             SelectionChanged="SelectorComponentsChildren_OnSelectionChanged">
+                        <Interaction.Behaviors>
+                            <BehaviorCollection>
+                                <ManagedContextDropBehavior Handler="{Binding $parent[settingPages:ComponentsSettingsPage].ViewModel.DropHandler}"
+                                                     Context="{Binding ViewModel.SelectedComponentContainerChildren}"/>
+                            </BehaviorCollection>
+                        </Interaction.Behaviors>
+                    </ListBox>
+                </Grid>
+            </Border>
+            
+            <TabControl Grid.Row="1"
+                        HorizontalContentAlignment="Stretch" 
+                        Padding="0"
+                        MaxWidth="{StaticResource SettingsContainerWidth}"
+                        Classes="compact"
+                        SelectedIndex="{Binding ViewModel.SettingsTabControlIndex}">
+                <TabItem Header="组件库">
+                    <!-- 按来源分组展示组件库 -->
+                    <ScrollViewer Padding="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding ViewModel.GroupedComponents}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="components:ComponentGroup">
+                                    <StackPanel Margin="0 4 0 8">
+                                        <TextBlock Text="{Binding GroupName}"
+                                                   FontWeight="SemiBold"
+                                                   Margin="0 8 0 4"/>
+                                        <ListBox ItemsSource="{Binding Components}"
+                                                 Classes="drag-source"
+                                                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                            <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid HorizontalAlignment="Stretch" RowDefinitions="Auto,*" ColumnDefinitions="Auto,Auto,*,Auto"
+                                                      Margin="0 8" Height="50">
+                                                    <ci:TouchDragThumb Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
+                                                                       Width="24"/>
+
+                                                    <controls:IconSourceElement Grid.Column="1" Grid.Row="0"
+                                                                                Grid.RowSpan="2"
+                                                                                Width="32" Height="32"
+                                                                                VerticalAlignment="Center"
+                                                                                ClipToBounds="False"
+                                                                                TextElement.FontSize="32"
+                                                                                Classes="repair-fontsize"
+                                                                                Margin="0 -4 4 0"
+                                                                                IconSource="{Binding IconSource}"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="2"
+                                                               Text="{Binding Name}"
+                                                               HorizontalAlignment="Left"
+                                                               VerticalAlignment="Top"
+                                                               Margin="0 0 0 1"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Grid.Row="1" Grid.Column="2"
+                                                               Text="{Binding Description}"
+                                                               Opacity="0.75"
+                                                               FontSize="12"
+                                                               FontWeight="Regular"
+                                                               TextWrapping="Wrap"
+                                                               HorizontalAlignment="Stretch"
+                                                               TextAlignment="Left"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel>
+                                                    <Interaction.Behaviors>
+                                                        <BehaviorCollection>
+                                                            <ci:WrapPanelAutoResizeBehavior TargetWidth="225"/>
+                                                        </BehaviorCollection>
+                                                    </Interaction.Behaviors>
+                                                </WrapPanel>
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+                                    </ListBox>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="组件设置" IsVisible="{Binding ViewModel.IsComponentSettingsVisible}">
+                    <ci:ComponentPresenter Settings="{Binding ViewModel.SelectedComponentSettings}"
+                                           IsPresentingSettings="True"/>
+                </TabItem>
+                <TabItem Header="高级设置" IsVisible="{Binding ViewModel.IsComponentAdvancedSettingsVisible}">
+                    <ci:ComponentAdvancedSettingsControl Settings="{Binding ViewModel.SelectedComponentSettings}"
+                                                         RequestOpenHideRules="ButtonOpenRuleset_OnClick"
+                                                         IsRootComponent="{Binding ViewModel.IsSelectedComponentOnRoot}"/>
+                </TabItem>
+                <TabItem Header="行设置" IsVisible="{Binding ViewModel.SelectedMainWindowLineSettings, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <ScrollViewer HorizontalAlignment="Stretch" 
+                                  DataContext="{Binding ViewModel.SelectedMainWindowLineSettings}">
+                        <StackPanel Classes="settings-container animated-intro" Margin="0">
+                            <!-- 按规则隐藏 -->
+                            <controls:SettingsExpander IconSource="{ci:FluentIconSource &#xEFBF;}"
+                                                       Header="按规则隐藏"
+                                                       Description="在指定规则满足时，自动隐藏此组件。注意此处的隐藏不会释放组件资源。">
+                                <controls:SettingsExpander.Footer>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button HorizontalAlignment="Left"
+                                                Theme="{StaticResource TransparentButton}"
+                                                Click="ButtonOpenMainWindowLineRuleset_OnClick"
+                                                IsVisible="{Binding HideOnRule}">
+                                            <ci:IconText Glyph="&#xF17E;" Text="编辑规则集…" />
+                                        </Button>
+                                        <ToggleSwitch VerticalAlignment="Center"
+                                                      IsChecked="{Binding HideOnRule}" />
+                                    </StackPanel>
+                                </controls:SettingsExpander.Footer>
+                            </controls:SettingsExpander>
+                            <!-- 不透明度 -->
+                            <controls:SettingsExpander IconSource="{ci:FluentIconSource &#xf023;}"
+                                                       Header="分体主界面"
+                                                       Description="启用后主界面会分开。">
+                                <controls:SettingsExpander.Footer>
+                                    <ComboBox SelectedIndex="{Binding IslandSeparationMode}">
+                                        <ComboBoxItem>继承</ComboBoxItem>
+                                        <ComboBoxItem>禁用</ComboBoxItem>
+                                        <ComboBoxItem>启用</ComboBoxItem>
+                                    </ComboBox>
+                                </controls:SettingsExpander.Footer>
+                            </controls:SettingsExpander>
+                            
+                            <Separator Margin="0 12 0 4" />
+                            <ci:IconText Glyph="&#xec4a;" Text="外观" Margin="0 0 0 4" />
+                            
+                            <!-- 不透明度 -->
+                            <controls:SettingsExpander IconSource="{ci:FluentIconSource &#xF37D;}"
+                                                       Header="不透明度"
+                                                       Description="主界面行整体的不透明度。">
+                                <controls:SettingsExpander.Footer>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Slider Width="180" Minimum="0.1" Maximum="1"
+                                                Classes="auto-tooltip"
+                                                ci:SliderDragTooltipAssist.StringFormat="F2"
+                                                Value="{Binding Opacity}"
+                                                TickFrequency="0.05"
+                                                IsSnapToTickEnabled="True" />
+                                    </StackPanel>
+                                </controls:SettingsExpander.Footer>
+                            </controls:SettingsExpander>
+                            
+                            <!--自定义背景颜色-->
+                            <controls:SettingsExpander IconSource="{ci:FluentIconSource &#xE523;}"
+                                                       Header="自定义背景颜色"
+                                                       Description="当前主界面行背景颜色，禁用时将使用上级默认值。">
+                                <controls:SettingsExpander.Footer>
+                                    <StackPanel Orientation="Horizontal">
+                                    
+                                        <ColorPicker
+                                            VerticalAlignment="Center"
+                                            Margin="0 0 6 0"
+                                            Color="{Binding BackgroundColor, Mode=TwoWay}"
+                                            IsVisible="{Binding IsCustomBackgroundColorEnabled}"/>
+                                        <ToggleSwitch VerticalAlignment="Center"
+                                                      IsChecked="{Binding IsCustomBackgroundColorEnabled}" />
+                                    </StackPanel>
+                                </controls:SettingsExpander.Footer>
+                            </controls:SettingsExpander>
+                            
+                            <!-- 自定义背景不透明度 -->
+                            <controls:SettingsExpander IconSource="{ci:FluentIconSource &#xF37D;}"
+                                                       Header="自定义背景不透明度"
+                                                       Description="当前主界面行的背景的不透明度，禁用将使用上级默认值。">
+                                <controls:SettingsExpander.Footer>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Slider Width="180" Minimum="0" Maximum="1"
+                                                Classes="auto-tooltip"
+                                                ci:SliderDragTooltipAssist.StringFormat="F2"
+                                                Value="{Binding BackgroundOpacity}"
+                                                TickFrequency="0.05"
+                                                IsSnapToTickEnabled="True" 
+                                                IsVisible="{Binding IsCustomBackgroundOpacityEnabled}"/>
+                                        <ToggleSwitch VerticalAlignment="Center"
+                                                      IsChecked="{Binding IsCustomBackgroundOpacityEnabled}" />
+                                    </StackPanel>
+                                </controls:SettingsExpander.Footer>
+                            </controls:SettingsExpander>
+                            
+                            <!-- 自定义背景圆角半径 -->
+                            <controls:SettingsExpander IconSource="{ci:FluentIconSource &#xF031;}"
+                                                       Header="自定义背景圆角半径"
+                                                       Description="当前主界面行背景圆角半径，调至最大数值时左右边缘为半圆。">
+                                <controls:SettingsExpander.Footer>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Slider Grid.Row="0" Width="180" Minimum="0" Maximum="20"
+                                                Value="{Binding CustomCornerRadius}"
+                                                TickFrequency="0.5"
+                                                ci:SliderDragTooltipAssist.StringFormat="F1"
+                                                Classes="auto-tooltip"
+                                                IsSnapToTickEnabled="True"
+                                                VerticalAlignment="Center" 
+                                                IsVisible="{Binding IsCustomCornerRadiusEnabled}"/>
+                                        <ToggleSwitch VerticalAlignment="Center"
+                                                      IsChecked="{Binding IsCustomCornerRadiusEnabled}" />
+                                    </StackPanel>
+                                </controls:SettingsExpander.Footer>
+                            </controls:SettingsExpander>
+
+                            <Separator Margin="0 12 0 4" />
+                            <ci:IconText Glyph="&#xF26F;" Text="字体" Margin="0 0 0 4" />
+                            <!-- 字体大小 -->
+                            <controls:SettingsExpander IconSource="{ci:FluentIconSource &#xF273;}"
+                                                        Header="字体大小"
+                                                        Description="调整组件上各类字体的大小，将覆盖【外观】设置和主界面行中设置的字体大小。"
+                                                        IsExpanded="{Binding IsResourceOverridingEnabled, Mode=OneWay}">
+                                <controls:SettingsExpander.Footer>
+                                    <ToggleSwitch IsChecked="{Binding IsResourceOverridingEnabled}"/>
+                                </controls:SettingsExpander.Footer>
+                                <controls:SettingsExpander.Styles>
+                                    <Style Selector="ci|Field">
+                                        <Setter Property="Width" Value="175" />
+                                        <Setter Property="Suffix" Value="px" />
+                                        <Style Selector="^ controls|NumberBox">
+                                            <Setter Property="SpinButtonPlacementMode" Value="Inline" />
+                                            <Setter Property="Minimum" Value="1" />
+                                            <Setter Property="Maximum" Value="40" />
+                                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                        </Style>
+                                    </Style>
+                                </controls:SettingsExpander.Styles>
+                                <controls:SettingsExpanderItem Content="次级字体大小"
+                                                                Description="时间点附加信息等">
+
+                                    <controls:SettingsExpanderItem.Footer>
+                                        <ci:Field>
+                                            <controls:NumberBox
+                                                Value="{Binding MainWindowSecondaryFontSize, Converter={x:Static ci:NotNaNConverter.Instance}}" />
+                                        </ci:Field>
+                                    </controls:SettingsExpanderItem.Footer>
+                                </controls:SettingsExpanderItem>
+                                <controls:SettingsExpanderItem Content="正文字体大小"
+                                                                Description="主界面默认字体大小">
+
+                                    <controls:SettingsExpanderItem.Footer>
+                                        <ci:Field>
+                                            <controls:NumberBox
+                                                Value="{Binding MainWindowBodyFontSize, Converter={x:Static ci:NotNaNConverter.Instance}}" />
+                                        </ci:Field>
+                                    </controls:SettingsExpanderItem.Footer>
+                                </controls:SettingsExpanderItem>
+                                <controls:SettingsExpanderItem Content="强调字体大小"
+                                                                Description="课程表、时钟、提醒标题、天气预报等内容">
+
+                                    <controls:SettingsExpanderItem.Footer>
+                                        <ci:Field>
+                                            <controls:NumberBox
+                                                Value="{Binding MainWindowEmphasizedFontSize, Converter={x:Static ci:NotNaNConverter.Instance}}" />
+                                        </ci:Field>
+                                    </controls:SettingsExpanderItem.Footer>
+                                </controls:SettingsExpanderItem>
+                                <controls:SettingsExpanderItem Content="大号字体大小"
+                                                                Description="课程预报等内容">
+
+                                    <controls:SettingsExpanderItem.Footer>
+                                        <ci:Field>
+                                            <controls:NumberBox
+                                                Value="{Binding MainWindowLargeFontSize, Converter={x:Static ci:NotNaNConverter.Instance}}" />
+                                        </ci:Field>
+                                    </controls:SettingsExpanderItem.Footer>
+                                </controls:SettingsExpanderItem>
+                            </controls:SettingsExpander>
+                            <!-- 字体颜色 -->
+                            <controls:SettingsExpander IconSource="{ci:FluentIconSource &#xF22A;}"
+                                                        Header="字体颜色"
+                                                        Description="调整字体颜色，将覆盖【外观】设置和主界面行中设置的值。">
+                                <controls:SettingsExpander.Footer>
+                                    <StackPanel Orientation="Horizontal">
+                                        <ColorPicker
+                                            VerticalAlignment="Center"
+                                            Margin="0 0 6 0"
+                                            Color="{Binding ForegroundColor, Mode=TwoWay}"
+                                            IsVisible="{Binding IsCustomForegroundColorEnabled}"/>
+                                        <ToggleSwitch VerticalAlignment="Center"
+                                                      IsChecked="{Binding IsCustomForegroundColorEnabled}" />
+                                    </StackPanel>
+                                </controls:SettingsExpander.Footer>
+                            </controls:SettingsExpander>
+                        </StackPanel>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+            
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Spacing="4"
+                        IsVisible="{Binding ViewModel.SelectedComponentSettings, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        Margin="0 0 0 0">
+                <ci:AnimatedIconButton
+                        Theme="{StaticResource TransparentButton}"
+                        IsEnabled="{Binding ViewModel.SelectedComponentSettings.HideOnRule}"
+                        Classes.fade="{Binding !ViewModel.SelectedComponentSettings.HideOnRule}"
+                        IsKeepingExpanded="{Binding ViewModel.SelectedComponentSettings.HideOnRule}"
+                        Glyph="&#xF17E;"
+                        Text="编辑…"
+                        Click="ButtonOpenRuleset_OnClick"
+                        ToolTip.Tip="编辑规则集…"/>
+                <CheckBox IsChecked="{Binding ViewModel.SelectedComponentSettings.HideOnRule}">按规则隐藏</CheckBox>
+            </StackPanel>
+        </Grid>
+        
+        <controls:InfoBar Grid.Row="5" Grid.Column="0" 
+                          Message="新功能：现在可以使用⌈编辑模式⌋更加直观地编辑主界面上的组件！"
+                          IsOpen="True">
+            <controls:InfoBar.ActionButton>
+                <Button Content="进入编辑模式"
+                        Command="{x:Static ci:UriNavigationCommands.UriNavigationCommand}"
+                        CommandParameter="classisland://app/edit?fromSettingsPage=true"/>
+            </controls:InfoBar.ActionButton>
+        </controls:InfoBar>
+    </Grid>
+</ci:SettingsPageBase>

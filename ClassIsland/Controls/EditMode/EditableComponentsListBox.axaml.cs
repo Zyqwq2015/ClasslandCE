@@ -1,0 +1,263 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Input;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Primitives;
+using Avalonia.Data.Converters;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.Xaml.Interactions.DragAndDrop;
+using ClassIsland.Core.Attributes;
+using ClassIsland.Core.Models.Components;
+using ClassIsland.Core.Services.Registry;
+using ClassIsland.Shared.Helpers;
+using CommunityToolkit.Mvvm.Input;
+
+namespace ClassIsland.Controls.EditMode;
+
+[PseudoClasses(":dragging")]
+public partial class EditableComponentsListBox : ListBox
+{
+    public IReadOnlyList<ComponentInfo> ContainerComponents { get; } =
+        ComponentRegistryService.Registered.Where(x => x.IsComponentContainer).ToList();
+
+    public static readonly FuncValueConverter<IBrush, BoxShadows> BrushToBoxShadowConverter = new(
+        x => new BoxShadows(new BoxShadow()
+        {
+            Blur = 16,
+            Color = x switch
+            {
+                ISolidColorBrush brush => brush.Color,
+                _ => new Color(255, 255, 0, 255)
+            },
+            IsInset = false,
+            OffsetX = 0, OffsetY = 0,
+            Spread = 2
+        }));
+
+    public static readonly StyledProperty<bool> IsDraggingProperty = AvaloniaProperty.Register<EditableComponentsListBox, bool>(
+        nameof(IsDragging));
+
+    public bool IsDragging
+    {
+        get => GetValue(IsDraggingProperty);
+        set => SetValue(IsDraggingProperty, value);
+    }
+
+    public static readonly StyledProperty<IReadOnlyList<ComponentSettings>> ContainerComponentStackProperty = AvaloniaProperty.Register<EditableComponentsListBox, IReadOnlyList<ComponentSettings>>(
+        nameof(ContainerComponentStack), []);
+
+    public IReadOnlyList<ComponentSettings> ContainerComponentStack
+    {
+        get => GetValue(ContainerComponentStackProperty);
+        set => SetValue(ContainerComponentStackProperty, value);
+    }
+
+    public static readonly StyledProperty<ICommand?> ShowComponentSettingsCommandProperty = AvaloniaProperty.Register<EditableComponentsListBox, ICommand?>(
+        nameof(ShowComponentSettingsCommand));
+
+    public ICommand? ShowComponentSettingsCommand
+    {
+        get => GetValue(ShowComponentSettingsCommandProperty);
+        set => SetValue(ShowComponentSettingsCommandProperty, value);
+    }
+    
+    public static readonly RoutedEvent<EditableComponentsListBoxEventArgs> RequestOpenChildComponentsEvent =
+        RoutedEvent.Register<EditableComponentsListBoxEventArgs>(
+            nameof(OpenChildComponents), RoutingStrategies.Bubble, typeof(EditableComponentsListBox));
+     
+    public event EventHandler<EditableComponentsListBoxEventArgs> RequestOpenChildComponents
+    {
+        add => AddHandler(RequestOpenChildComponentsEvent, value);
+        remove => RemoveHandler(RequestOpenChildComponentsEvent, value);
+    }
+    
+    public static readonly RoutedEvent<RequestAddComponentEventArgs> RequestAddComponentEvent =
+        RoutedEvent.Register<RequestAddComponentEventArgs>(
+            nameof(RequestAddComponent), RoutingStrategies.Bubble, typeof(EditableComponentsListBox));
+     
+    public event EventHandler<RequestAddComponentEventArgs> RequestAddComponent
+    {
+        add => AddHandler(RequestAddComponentEvent, value);
+        remove => RemoveHandler(RequestAddComponentEvent, value);
+    }
+
+    public static readonly RoutedEvent<EditableComponentsListBoxEventArgs>
+        ComponentDeletedEvent =
+            RoutedEvent.Register<EditableComponentsListBox, EditableComponentsListBoxEventArgs>(nameof(ComponentDeleted), RoutingStrategies.Bubble);
+
+    public event EventHandler<EditableComponentsListBoxEventArgs> ComponentDeleted
+    {
+        add => AddHandler(ComponentDeletedEvent, value);
+        remove => RemoveHandler(ComponentDeletedEvent, value);
+    }
+    
+
+    public static readonly AttachedProperty<IEnumerable?> ItemsSourceInternalProperty =
+        AvaloniaProperty.RegisterAttached<EditableComponentsListBox, Control, IEnumerable?>("ItemsSourceInternal", inherits: true);
+
+    public static void SetItemsSourceInternal(Control obj, IEnumerable? value) => obj.SetValue(ItemsSourceInternalProperty, value);
+    public static IEnumerable? GetItemsSourceInternal(Control obj) => obj.GetValue(ItemsSourceInternalProperty);
+
+    public static readonly AttachedProperty<bool> IsEditableComponentsListBoxChildProperty =
+        AvaloniaProperty.RegisterAttached<EditableComponentsListBox, ListBoxItem, bool>("IsEditableComponentsListBoxChild");
+
+    public static void SetIsEditableComponentsListBoxChild(ListBoxItem obj, bool value) => obj.SetValue(IsEditableComponentsListBoxChildProperty, value);
+    public static bool GetIsEditableComponentsListBoxChild(ListBoxItem obj) => obj.GetValue(IsEditableComponentsListBoxChildProperty);
+
+    [RelayCommand]
+    private void OpenChildComponents(ComponentSettings? componentSettings)
+    {
+        if (componentSettings == null
+            || ItemsSource is not IList<ComponentSettings> components)
+        {
+            return;
+        }
+
+        var container = ContainerFromItem(componentSettings);
+        if (container == null)
+        {
+            return;
+        }
+        var window = TopLevel.GetTopLevel(this);
+
+        if (window == null)
+            return;
+        var transform = container.TransformToVisual(window);
+        var pointInWindow = transform?.Transform(new Point(0, 0));
+        if (pointInWindow == null)
+        {
+            return;
+        }
+        RaiseEvent(new EditableComponentsListBoxEventArgs(RequestOpenChildComponentsEvent)
+        {
+            Settings = componentSettings,
+            ComponentStack = ContainerComponentStack,
+            ComponentsList = components,
+            ItemPosition = pointInWindow.Value
+        });
+    }
+
+    [RelayCommand]
+    private void DeleteComponent(ComponentSettings? componentSettings)
+    {
+        if (componentSettings == null
+            || ItemsSource is not IList<ComponentSettings> components)
+        {
+            return;
+        }
+
+        components.Remove(componentSettings);
+        RaiseEvent(new EditableComponentsListBoxEventArgs(ComponentDeletedEvent)
+        {
+            Settings = componentSettings,
+            ComponentStack = ContainerComponentStack,
+            ComponentsList = components,
+            ItemPosition = new Point(0, 0)
+        });
+    }
+    
+    [RelayCommand]
+    private void CreateContainerComponent(ComponentInfo container)
+    {
+        if (SelectedItem is not ComponentSettings selected)
+        {
+            return;
+        }
+
+        if (ItemsSource is not IList<ComponentSettings> list)
+        {
+            return;
+        }
+        var index = list.IndexOf(selected);
+
+        if (index == -1)
+        {
+            return;
+        }
+
+        index = Math.Min(list.Count - 1, index);
+        var newComp = new ComponentSettings()
+        {
+            Id = container.Guid.ToString(),
+        };
+        if (container.ComponentType?.BaseType != null)
+        {
+            newComp.Settings =
+                Services.ComponentsService.LoadComponentSettings(newComp, container.ComponentType.BaseType);
+        }
+        list.Insert(index, newComp);
+        list.Remove(selected);
+        newComp.Children?.Add(selected);
+        SelectedItem = newComp;
+        OpenChildComponents(newComp);
+    }
+    
+    [RelayCommand]
+    private void DuplicateComponent(ComponentSettings settings)
+    {
+        if (ItemsSource is not IList<ComponentSettings> list)
+        {
+            return;
+        }
+        var index = list.IndexOf(settings);
+        if (index == -1)
+        {
+            return;
+        }
+        index = Math.Min(list.Count - 1, index);
+
+        var newSettings = ConfigureFileHelper.CopyObject(settings);
+        list.Insert(index, newSettings);
+        SelectedItem = newSettings;
+    }
+
+    [RelayCommand]
+    private void InvokeRequestAddComponent()
+    {
+        if (ItemsSource is not IList<ComponentSettings> list)
+        {
+            return;
+        }
+
+        RaiseEvent(new RequestAddComponentEventArgs(RequestAddComponentEvent)
+        {
+            ComponentList = list
+        });
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ManagedDragDropService.Instance.DragStarted += InstanceOnDragStarted;
+        ManagedDragDropService.Instance.DragEnded += InstanceOnDragEnded;
+        base.OnAttachedToVisualTree(e);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ManagedDragDropService.Instance.DragStarted -= InstanceOnDragStarted;
+        ManagedDragDropService.Instance.DragEnded -= InstanceOnDragEnded;
+        SetDragging(false);
+        base.OnDetachedFromVisualTree(e);
+    }
+
+    private void InstanceOnDragEnded()
+    {
+        SetDragging(false);
+    }
+
+    private void InstanceOnDragStarted()
+    {
+        SetDragging(true);
+    }
+
+    private void SetDragging(bool isDragging)
+    {
+        IsDragging = isDragging;
+        PseudoClasses.Set(":dragging", isDragging);
+    }
+}

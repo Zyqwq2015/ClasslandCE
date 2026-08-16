@@ -1,0 +1,93 @@
+﻿using System;
+using System.Threading.Tasks;
+using ClassIsland.Core.Abstractions.Services;
+using ClassIsland.Core.Abstractions.Services.Management;
+using ClassIsland.Shared;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace ClassIsland.Services;
+
+public class SplashService: ObservableRecipient, ISplashService
+{
+    private string _splashStatus = "正在启动…";
+    private double _currentProgress = 0.0;
+    private ISplashProvider? _currentSplashProvider;
+
+    public string SplashStatus
+    {
+        get => _splashStatus;
+        set
+        {
+            if (value == _splashStatus) return;
+            _splashStatus = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public void SetDetailedStatus(string message)
+    {
+        if (SettingsService.Settings.ShowDetailedStatusOnSplash)
+        {
+            SplashStatus = message;
+        }
+    }
+
+    public double CurrentProgress
+    {
+        get => _currentProgress;
+        set
+        {
+            if (value.Equals(_currentProgress)) return;
+            _currentProgress = value;
+            OnPropertyChanged();
+            ProgressChanged?.Invoke(this, value);
+        }
+    }
+
+    public event EventHandler<double>? ProgressChanged;
+
+    public event EventHandler? SplashEnded;
+    public async Task EndSplash()
+    {
+        if (_currentSplashProvider != null)
+        {
+            await _currentSplashProvider.EndSplash();
+        }
+        _currentSplashProvider = null;
+    }
+
+    public async Task StartSplash()
+    {
+        if (_currentSplashProvider != null)
+        {
+            throw new InvalidOperationException("启动界面已显示，不能重复显示启动界面。");
+        }
+
+        _currentSplashProvider = IAppHost.TryGetService<ISplashProvider>();
+        if (_currentSplashProvider != null)
+        {
+            await _currentSplashProvider.StartSplash();
+        }
+    }
+
+    private SettingsService SettingsService { get; }
+
+    private static string DefaultText { get; } = "正在启动…";
+
+    public SplashService(SettingsService settingsService, IManagementService managementService)
+    {
+        SettingsService = settingsService;
+        if (managementService.Policy.DisableSplashCustomize)
+        {
+            SettingsService.Settings.SplashCustomLogoSource = "";
+            SettingsService.Settings.SplashCustomText = "";
+            SettingsService.Settings.ShowDetailedStatusOnSplash = false;
+        }
+        ResetSplashText();
+    }
+
+    public void ResetSplashText()
+    {
+        SplashStatus = SettingsService.Settings.SplashCustomText == "" ? DefaultText : SettingsService.Settings.SplashCustomText;
+    }       
+}

@@ -1,0 +1,83 @@
+<Project>
+	<PropertyGroup>
+		<!-- we'll do our own versioning -->
+		<GitVersion>false</GitVersion>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
+		<NullabilityInfoContextSupport>True</NullabilityInfoContextSupport>
+		<ErrorOnDuplicatePublishOutputFiles>False</ErrorOnDuplicatePublishOutputFiles>
+		<CheckEolWorkloads>false</CheckEolWorkloads>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="ClassIsland.SimpleGitInfoGenerator" PrivateAssets="All"
+						  IncludeAssets="build;analyzers"
+						  Version="1.0.0.1"/>
+
+		<Compile Include="$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)'))/AssemblyInfo.cs">
+			<LinkBase>Properties</LinkBase>
+		</Compile>
+	</ItemGroup>
+	<PropertyGroup>
+		<GitVersion_UpdateAssemblyInfo>true</GitVersion_UpdateAssemblyInfo>
+	</PropertyGroup>
+
+	<!--<Target Name="PopulateInfo" DependsOnTargets="GitVersion" BeforeTargets="GetAssemblyVersion;GenerateNuspec;GetPackageContents">
+		<PropertyGroup>
+			<Version>$(GitBaseTag)</Version>
+		</PropertyGroup>
+	</Target>-->
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug_MSIX'">
+		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+		<IsMsix>true</IsMsix>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Release_MSIX'">
+		<IsMsix>true</IsMsix>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(ClassIsland_PlatformTarget)'=='x64'">
+		<DefineConstants>$(DefineConstants);PLATFORM_x64</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(ClassIsland_PlatformTarget)'=='x86'">
+		<DefineConstants>$(DefineConstants);PLATFORM_x86</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(ClassIsland_PlatformTarget)'=='arm64'">
+		<DefineConstants>$(DefineConstants);PLATFORM_ARM64</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(ClassIsland_PlatformTarget)'=='arm'">
+		<DefineConstants>$(DefineConstants);PLATFORM_ARM</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(ClassIsland_PlatformTarget)'=='Any CPU'">
+		<DefineConstants>$(DefineConstants);PLATFORM_Any</DefineConstants>
+	</PropertyGroup>
+	<!-- <PropertyGroup Condition="'$(IsMsix)'=='true'">
+		<Platform>AnyCPU</Platform>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
+	<Target Name="OverrideProperties" BeforeTargets="PrepareForBuild" Condition="'$(IsMsix)'=='true'">
+		<Message Text="Overriding properties for MSIX build" Importance="high" />
+		<PropertyGroup>
+			<RuntimeIdentifier></RuntimeIdentifier>
+		</PropertyGroup>
+	</Target> -->
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
+	</ItemGroup>
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+	</PropertyGroup>
+	
+	<!-- NIX -->
+	<PropertyGroup Condition="'$(NIX)' == 'true'">
+        <DefineConstants>$(DefineConstants);NIX</DefineConstants>
+		<GitVersion_UpdateAssemblyInfo>false</GitVersion_UpdateAssemblyInfo>
+    </PropertyGroup>
+</Project>

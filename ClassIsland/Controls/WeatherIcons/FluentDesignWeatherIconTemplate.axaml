@@ -1,0 +1,18 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="using:System"
+                    xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                    xmlns:converters="using:ClassIsland.Converters">
+    <DataTemplate DataType="{x:Type system:String}" x:Key="FluentDesignWeatherIconTemplate">
+        <Border Background="Transparent" x:Name="OuterBorder" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <ci:FluentIcon HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                               Width="20"
+                               Height="20"
+                               FontSize="24"
+                               Margin="0 1.2 0 -1.2"
+                               Glyph="{Binding Converter={x:Static converters:WeatherConverters.WeatherTypeToIconGlyphConverter}}">
+                </ci:FluentIcon>
+            </Viewbox></Border>
+    </DataTemplate>
+</ResourceDictionary>

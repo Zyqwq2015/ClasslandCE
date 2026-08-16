@@ -1,0 +1,47 @@
+<ci:RuleSettingsControlBase x:TypeArguments="rules:CurrentWeatherRuleSettings" 
+                            x:Class="ClassIsland.Controls.RuleSettingsControls.CurrentWeatherRuleSettingsControl"
+                            xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ClassIsland.Controls.RuleSettingsControls"
+             xmlns:ci="http://classisland.tech/schemas/xaml/core"
+             xmlns:rules="clr-namespace:ClassIsland.Models.Rules"
+             xmlns:controls="clr-namespace:ClassIsland.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:CurrentWeatherRuleSettingsControl}}">
+        <StackPanel Spacing="4" Orientation="Horizontal" Classes="items-valign-center">
+            <ComboBox SelectedValue="{Binding Settings.WeatherId}"
+                      SelectedValueBinding="{Binding Code}"
+                      MaxDropDownHeight="360"
+                      x:Name="WeatherComboBox"
+                      ItemsSource="{Binding WeatherService.WeatherStatusList}">
+                <ComboBox.Styles>
+                    <Style Selector="ComboBoxItem">
+                        <Setter Property="MinHeight" Value="32"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    </Style>
+                    <Style Selector="#WeatherComboBox /template/ Popup#PART_Popup">
+                        <Setter Property="Width" Value="200"/>
+                        <Setter Property="PlacementMode" Value="BottomEdgeAlignedRight"/>
+                    </Style>
+                </ComboBox.Styles>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal"
+                                    Classes="items-valign-center"
+                                    Spacing="4">
+                            <controls:WeatherPackIconControl Code="{Binding Code}"/>
+                            <TextBlock Text="{Binding Weather}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <CheckBox IsChecked="{Binding Settings.IsFuzzyMatch}" 
+                      Content="包含相似天气" 
+                      Margin="4,0,0,0"
+                      ToolTip.Tip="勾选后，选择如“雨”、“雪”等大类天气时，将自动匹配其包含的所有具体天气（如“小雨”、“中雪”等）。"/>
+        </StackPanel>
+    </Grid>
+</ci:RuleSettingsControlBase>

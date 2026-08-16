@@ -1,0 +1,33 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:ClassIsland.Controls">
+    <Design.PreviewWith>
+        <controls:WorkflowProgressIndicatorControl />
+    </Design.PreviewWith>
+
+    <Style Selector="controls|WorkflowProgressIndicatorControl">
+        <!-- Set Defaults -->
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border 
+                    CornerRadius="2"
+                    Padding="0 0 -2 0"
+                    ClipToBounds="True">
+                    <ItemsControl VerticalAlignment="Center"
+                                  ItemsSource="{Binding Workflow.ActionSet.ActionItems, RelativeSource={RelativeSource TemplatedParent}}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" ColumnSpacing="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <controls:WorkflowProgressIndicatorItemControl Action="{Binding}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>

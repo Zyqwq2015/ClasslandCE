@@ -1,0 +1,97 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ci="http://classisland.tech/schemas/xaml/core"
+        xmlns:controls="http://classisland.tech/schemas/xaml/core"
+        x:CompileBindings="True">
+    <Style Selector="controls|AnimatedIconButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Button Name="PART_Button"
+                            HorizontalAlignment="Left"
+                            HorizontalContentAlignment="Left"
+
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Command="{TemplateBinding Command}"
+                            CommandParameter="{TemplateBinding CommandParameter}"
+                            IsEnabled="{TemplateBinding IsEnabled}"
+                            Theme="{TemplateBinding Theme}"
+                            Flyout="{TemplateBinding Flyout}">
+                        <Canvas x:Name="Canvas" Height="{TemplateBinding TargetHeight}">
+                            <Canvas.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Easing="SineEaseOut"
+                                                      Duration="{Binding $parent[ci:AnimatedIconButton].Duration}"
+                                                      Property="Width"/>
+                                </Transitions>
+                            </Canvas.Transitions>
+                            <ci:IconText Name="PART_IconText"
+                                         Glyph="{TemplateBinding Glyph}"
+                                         Foreground="{TemplateBinding Foreground}"
+                                         Background="{TemplateBinding Background}"
+                                         FontSize="{TemplateBinding FontSize}"
+                                         FontWeight="{TemplateBinding FontWeight}"
+                                         Text="{TemplateBinding Text}">
+                                <ci:IconText.Styles>
+                                    <Style Selector="ci|IconText TextBlock#TextElement">
+                                        <Setter Property="Transitions">
+                                            <Transitions>
+                                                <DoubleTransition Property="Opacity"
+                                                                  Duration="{Binding $parent[ci:AnimatedIconButton].Duration}">
+                                                    <DoubleTransition.Easing>
+                                                        <SineEaseInOut />
+                                                    </DoubleTransition.Easing>
+                                                </DoubleTransition>
+                                            </Transitions>
+                                        </Setter>
+                                    </Style>
+                                </ci:IconText.Styles>
+                            </ci:IconText>
+                            <ci:IconText Name="PART_GhostIconOnlyIconText"
+                                         Glyph="{TemplateBinding Glyph}"
+                                         Foreground="{TemplateBinding Foreground}"
+                                         Background="{TemplateBinding Background}"
+                                         FontSize="{TemplateBinding FontSize}"
+                                         FontWeight="{TemplateBinding FontWeight}"
+                                         Opacity="0"
+                                         IsHitTestVisible="False"
+                                         IsTabStop="False">
+                            </ci:IconText>
+                        </Canvas>
+                    </Button>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        
+        <Style Selector="^ /template/ Button#PART_Button Canvas#Canvas ci|IconText#PART_IconText TextBlock#TextElement">
+            <Setter Property="Opacity" Value="0.0"/>
+        </Style>
+        <Style Selector="^:expanded /template/ Button#PART_Button Canvas#Canvas ci|IconText#PART_IconText TextBlock#TextElement">
+            <Setter Property="Opacity" Value="1.0"/>
+        </Style>
+        
+        <Style Selector="^ /template/ Canvas#Canvas">
+            <Setter Property="Width" Value="{Binding TargetWidth, RelativeSource={RelativeSource TemplatedParent}}"/>
+        </Style>
+        <Style Selector="^:expanded /template/ Canvas#Canvas">
+            <Setter Property="Width" Value="{Binding FullWidth, RelativeSource={RelativeSource TemplatedParent}}"/>
+        </Style>
+        
+        <Style Selector="^ /template/ Button#PART_Button /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background"
+                                     Duration="0:0:0.15" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="^.foreground-accent /template/ Button#PART_Button /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource CustomizedAccentBarBackground1Brush}" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+        <Style Selector="^.fade /template/ Button#PART_Button /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+    </Style>
+</Styles>

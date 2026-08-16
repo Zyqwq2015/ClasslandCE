@@ -1,0 +1,216 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <UseWPF>false</UseWPF>
+        <UseWindowsForms>false</UseWindowsForms>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <ApplicationIcon>Assets\AppLogo.ico</ApplicationIcon>
+<!--        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>-->
+        <UserSecretsId>0702af86-626c-4e4a-94e4-f506e4e2beb7</UserSecretsId>
+        <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+        <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
+        <AssemblyName>ClassIsland</AssemblyName>
+        <RootNamespace>ClassIsland</RootNamespace>
+		<IsMsix>$(IsMsix)</IsMsix>
+		<Configurations>Debug;Release;Debug_MSIX;Release_MSIX</Configurations>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <HotAvaloniaIncludeExtensions>True</HotAvaloniaIncludeExtensions>
+        <OutputType>Library</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>disable</ImplicitUsings>
+        <MSBuildDisableGetCopyToPublishDirectoryItemsOptimization>true</MSBuildDisableGetCopyToPublishDirectoryItemsOptimization>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='Release_MSIX'">
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Debug' Or '$(Configuration)'=='Debug_MSIX'">
+	    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Debug_MSIX' Or '$(Configuration)'=='Release_MSIX'">
+      <IsMsix>true</IsMsix>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(IsMsix)'=='true'">
+        <!-- <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
+        <EnableMsixTooling>true</EnableMsixTooling>
+        <TargetPlatformVersion>10.0.26100.0</TargetPlatformVersion>
+        <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
+        <DefaultLanguage>zh-CN</DefaultLanguage>
+        <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+        <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling> -->
+    </PropertyGroup>
+    <ItemGroup Condition="'$(IsMsix)'=='true'">
+        <AppxManifest Include="Package.appxmanifest">
+            <SubType>Designer</SubType>
+        </AppxManifest>
+    </ItemGroup>
+    <PropertyGroup Condition="'$(IsMsix)'!='true'">
+    </PropertyGroup>
+    <ItemGroup>
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)'=='Debug'">
+        <PackageReference Include="JetBrains.Profiler.Api" Version="1.4.11" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)'=='Debug_MSIX'">
+      <PackageReference Include="JetBrains.Profiler.Api">
+        <Version>1.4.11</Version>
+      </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+        <PackageReference Include="Downloader" Version="5.9.0" />
+        <PackageReference Include="Google.Protobuf" Version="3.27.0-rc1" />
+        <PackageReference Include="Grpc.Tools" Version="2.62.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="GuerrillaNtp" Version="3.1.0" />
+        <PackageReference Include="ini-parser-netcore" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.183">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.0.6" />
+        <PackageReference Include="PanAndZoom" Version="11.3.9.1" />
+        <PackageReference Include="Pastel" Version="4.2.0" />
+        <PackageReference Include="PgpCore" Version="6.5.1" />
+        <PackageReference Include="RawInput.Sharp" Version="0.1.3" />
+        <PackageReference Include="Sentry" Version="6.4.0" />
+        <PackageReference Include="Sentry.Extensions.Logging" Version="6.4.0" />
+        <PackageReference Include="SharpZipLib" Version="1.4.2" />
+        <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+        <PackageReference Include="System.CommandLine.Hosting" Version="0.4.0-alpha.22272.1" />
+        <PackageReference Include="System.Management" Version="8.0.0" />
+        <PackageReference Include="System.Speech" Version="8.0.0" />
+        <PackageReference Include="TimeCrontab" Version="3.5.1" />
+        <PackageReference Include="WindowsShortcutFactory" Version="1.1.0" />
+        <PackageReference Include="ColorHelper" Version="1.8.1" />
+        <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.3.0" />
+        <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
+	</ItemGroup>
+    <ItemGroup>
+        <Folder Include="Assets\Localization\SettingsPage\Component\" />
+        <Folder Include="Assets\Localization\SettingsPage\Appearance\" />
+        <Folder Include="Assets\Localization\SettingsPage\Notification\" />
+        <Folder Include="Assets\Localization\SettingsPage\Window\" />
+        <Folder Include="Assets\Localization\SettingsPage\Weather\" />
+        <Folder Include="Assets\Localization\SettingsPage\Update\" />
+        <Folder Include="Assets\Localization\SettingsPage\Automation\" />
+        <Folder Include="Assets\Localization\SettingsPage\Storage\" />
+        <Folder Include="Assets\Localization\SettingsPage\Privacy\" />
+        <Folder Include="Assets\Localization\SettingsPage\About\" />
+        <Folder Include="Models\Logging\" />
+        <Folder Include="Models\Native\" />
+        <Folder Include="Models\TimeRules\" />
+        <Folder Include="Models\Ipc\" />
+        <Folder Include="Models\AuthorizeProviderSettings\" />
+        <Folder Include="Models\Logging\" />
+        <Folder Include="Services\Metadata\" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="..\..\.editorconfig" Link=".editorconfig" />
+    </ItemGroup>
+    <ItemGroup>
+<!--        <AvaloniaResource Include="Assets\**" />-->
+<!--        <AvaloniaResource Remove="Assets\Fonts\*.ttf" />-->
+        <AvaloniaResource Remove="Assets\Localization\SettingsPage\General\Localization.SettingsPage.General.resx" />
+        <AvaloniaResource Remove="Assets\Localization\SettingsPage\Localization.SettingsPage.resx" />
+        <AvaloniaResource Remove="Assets\Localization\TrayMenu\Localization.TrayMenu.resx" />
+        <None Include="Assets\AppLogo.png" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" PublishFolderType="Resource" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Debug_MSIX'">
+        <AvaloniaResource Include="Assets\**" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' != 'Debug' And '$(Configuration)' != 'Debug_MSIX'">
+        <None Update="Assets\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+            <PublishFolderType>Resource</PublishFolderType>
+        </None>
+        <None Remove="Assets\AppLogo.ico" />
+        <None Remove="Assets\Tutorials\**" />
+        <None Remove="Assets\TrustedPublicKeys\**" />
+        <AvaloniaResource Include="Assets\Tutorials\**" />
+        <AvaloniaResource Include="Assets\TrustedPublicKeys\**" />
+        <AvaloniaResource Include="Assets\AppLogo.ico" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="Assets\AppLogo_Monochrome.png" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" PublishFolderType="Resource" />
+        <None Include="Assets\Localization\SettingsPage\General\Localization.SettingsPage.General.resx" />
+        <None Include="Assets\Localization\SettingsPage\Localization.SettingsPage.resx" />
+        <None Include="Assets\Localization\TrayMenu\Localization.TrayMenu.resx" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TrimAssets)'=='true'">
+        <Resource Remove="Assets\Fonts\*.ttf" />
+	</ItemGroup>
+    <PropertyGroup Condition="'$(ClassIsland_SelfContained)'=='true'">
+        <DefineConstants>$(DefineConstants);SelfContained</DefineConstants>
+    </PropertyGroup>
+	<PropertyGroup Condition="'$(PublishBuilding)' != 'true' And ('$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Debug_MSIX')">
+		<DefineConstants>$(DefineConstants);DevelopmentBuild</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(PublishBuilding)' == 'true'">
+		<DefineConstants>$(DefineConstants);PublishBuilding</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(IsMsix)' == 'true'">
+		<DefineConstants>$(DefineConstants);IsMsix</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Assets\Localization\SettingsPage\General\Localization.SettingsPage.General.Designer.cs" />
+	  <Compile Remove="Assets\Localization\TrayMenu\Localization.TrayMenu.Designer.cs" />
+	  <Compile Update="Views\SettingPages\UpdateSettingsPage.axaml.cs">
+	    <DependentUpon>UpdateSettingsPage.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="App.Services.xaml.cs">
+	    <DependentUpon>App.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Controls\ScheduleDataGrid\ScheduleDataGridCellControl.axaml.cs">
+	    <DependentUpon>ScheduleDataGridCellControl.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Remove="Assets\Localization\SettingsPage\General\Localization.SettingsPage.General.en.resx" />
+	  <EmbeddedResource Remove="Assets\Localization\SettingsPage\General\Localization.SettingsPage.General.resx" />
+	  <EmbeddedResource Remove="Assets\Localization\SettingsPage\General\Localization.SettingsPage.General.zh-Hans.resx" />
+	  <EmbeddedResource Remove="Assets\Localization\SettingsPage\General\Localization.SettingsPage.General.zh-Hant.resx" />
+	  <EmbeddedResource Remove="Assets\Localization\TrayMenu\Localization.TrayMenu.en.resx" />
+	  <EmbeddedResource Remove="Assets\Localization\TrayMenu\Localization.TrayMenu.resx" />
+	  <EmbeddedResource Remove="Assets\Localization\TrayMenu\Localization.TrayMenu.zh-Hans.resx" />
+	  <EmbeddedResource Remove="Assets\Localization\TrayMenu\Localization.TrayMenu.zh-Hant.resx" />
+	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\ClassIsland.Core\ClassIsland.Core.csproj" />
+        <ProjectReference Include="..\ClassIsland.Shared\ClassIsland.Shared.csproj" />
+        <ProjectReference Include="..\vendors\EdgeTtsSharp\Edge_tts_sharp\Edge_tts_sharp.csproj" />
+        <ProjectReference Include="..\vendors\PhainonDistributionCenter.Shared\PhainonDistributionCenter.Shared.csproj" />
+    </ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Controls\TimeLine\TimeLineListItemControl.axaml.cs">
+	    <DependentUpon>TimeLineListItemControl.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Controls\TimeLine\TimeLineListItemExpandingAdornerControl.axaml.cs">
+	    <DependentUpon>TimeLineListItemExpandingAdornerControl.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	  <Compile Update="Controls\TimeLine\TimeLineListItemSeparatorAdornerControl.axaml.cs">
+	    <DependentUpon>TimeLineListItemSeparatorAdornerControl.axaml</DependentUpon>
+	    <SubType>Code</SubType>
+	  </Compile>
+	</ItemGroup>
+	<ItemGroup>
+	  <AvaloniaXaml Update="Assets\Fonts\Fonts.axaml">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </AvaloniaXaml>
+	</ItemGroup>
+
+    <Target Name="PrintConstants" AfterTargets="Build">
+		<Message Text="Constants: $(DefineConstants)" Importance="high" />
+		<Message Text="IsMsix: $(IsMsix)" Importance="high" />
+		<Message Text="TargetFramework: $(TargetFramework)" Importance="high" />
+		<Message Text="ClassIsland_SelfContained: $(ClassIsland_SelfContained)" Importance="high" />
+    </Target>
+
+	<Import Project="..\Global.props" />
+    <Import Project="..\AvaloniaShared.props" />
+</Project>
