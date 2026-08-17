@@ -128,6 +128,11 @@ public partial class VolumeLevelComponent : ComponentBase<VolumeLevelComponentSe
             for (int i = 0; i < barCount; i++) Bars.Items.Add(i);
         }
         var activeBars = (int)Math.Ceiling(level * barCount);
+        // 预缓存三色画笔，避免每帧 new —— 降低 GC 压力，防止 80ms 高频更新卡 UI
+        var green = LevelGreenBrush;
+        var orange = LevelOrangeBrush;
+        var red = LevelRedBrush;
+        var off = LevelOffBrush;
         for (int i = 0; i < Bars.Items.Count; i++)
         {
             // ContentPresenter.Child 即模板根 Border
@@ -135,11 +140,17 @@ public partial class VolumeLevelComponent : ComponentBase<VolumeLevelComponentSe
             var border = (presenter as ContentPresenter)?.Child as Border;
             if (border == null) continue;
             border.Background = i < activeBars
-                ? (i >= 7 ? new SolidColorBrush(Color.FromRgb(255, 80, 80))
-                    : i >= 4 ? new SolidColorBrush(Color.FromRgb(255, 180, 0))
-                    : new SolidColorBrush(Color.FromRgb(80, 220, 120)))
-                : (IBrush)new SolidColorBrush(Color.FromArgb(60, 255, 255, 255));
+                ? (i >= 7 ? red
+                    : i >= 4 ? orange
+                    : green)
+                : off;
         }
         IconText.Opacity = 0.6 + 0.4 * level;
     }
+
+    // 电平条静态画刷缓存
+    private static readonly IBrush LevelGreenBrush = new SolidColorBrush(Color.FromRgb(80, 220, 120));
+    private static readonly IBrush LevelOrangeBrush = new SolidColorBrush(Color.FromRgb(255, 180, 0));
+    private static readonly IBrush LevelRedBrush = new SolidColorBrush(Color.FromRgb(255, 80, 80));
+    private static readonly IBrush LevelOffBrush = new SolidColorBrush(Color.FromArgb(60, 255, 255, 255));
 }

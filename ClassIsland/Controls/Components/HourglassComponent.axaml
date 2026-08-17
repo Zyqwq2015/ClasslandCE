@@ -8,46 +8,23 @@
                         xmlns:controls="clr-namespace:ClassIsland.Core.Abstractions.Controls;assembly=ClassIsland.Core"
                         xmlns:componentSettings="clr-namespace:ClassIsland.Models.ComponentSettings"
                         mc:Ignorable="d"
-                        d:DesignHeight="180" d:DesignWidth="180">
+                        d:DesignHeight="240" d:DesignWidth="200">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- 3D 立体沙漏画布 -->
-        <Canvas x:Name="HourglassCanvas" Grid.Row="0" Width="180" Height="150" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <!-- 阴影 -->
-            <Path x:Name="ShadowPath" Opacity="0.3"/>
+        <!-- 精致 3D 沙漏自绘渲染器 -->
+        <local:HourglassRenderer x:Name="Renderer"
+                                 Grid.Row="0"
+                                 Width="200" Height="200"
+                                 VerticalAlignment="Center"
+                                 HorizontalAlignment="Center"/>
 
-            <!-- 玻璃主体 -->
-            <Path x:Name="GlassBody" StrokeThickness="0"/>
-
-            <!-- 玻璃高光 -->
-            <Path x:Name="GlassHighlight" StrokeThickness="0"/>
-
-            <!-- 上瓶沙子 -->
-            <Path x:Name="SandTop" StrokeThickness="0"/>
-
-            <!-- 下瓶沙子 -->
-            <Path x:Name="SandBottom" StrokeThickness="0"/>
-
-            <!-- 沙子表面高光 -->
-            <Path x:Name="SandShine" StrokeThickness="0"/>
-
-            <!-- 顶部木框 -->
-            <Path x:Name="TopFrame" StrokeThickness="0"/>
-
-            <!-- 底部木框 -->
-            <Path x:Name="BottomFrame" StrokeThickness="0"/>
-
-            <!-- 玻璃边框 -->
-            <Path x:Name="GlassOutline" StrokeThickness="0"/>
-        </Canvas>
-
-        <!-- 时间文本 -->
+        <!-- 时间 + 按钮栏 -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6" Margin="0 2 0 0">
-            <TextBlock x:Name="TimeText" FontSize="14" VerticalAlignment="Center"
+            <TextBlock x:Name="TimeText" FontSize="13" VerticalAlignment="Center"
                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
             <Button x:Name="ToggleButton" Content="开始" FontSize="11" Padding="8 2"
                     VerticalAlignment="Center" Click="ToggleButton_OnClick"/>
