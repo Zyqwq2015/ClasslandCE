@@ -38,7 +38,7 @@ public partial class OobeIntroAnimationControl : UserControl
             Console.WriteLine(delay);
             var c1 = children1[i];
             var c2 = children2[i];
-            var anim1 = BuildAnimation1(delay * 9, i == 6);
+            var anim1 = BuildAnimation1(delay * 9, i == 7);
             var anim2 = BuildAnimation2(delay * 9);
             _ = anim1.RunAsync(c1);
             var t = anim2.RunAsync(c2);

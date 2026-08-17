@@ -103,6 +103,9 @@ public partial class App
         // Classland CE
         services.AddSingleton<VoiceAssistantService>();
         services.AddHostedService<VoiceAssistantService>(x => x.GetRequiredService<VoiceAssistantService>());
+        // Classland CE: 语音唤醒控制（唤醒引擎 + 命令解析 + 系统执行 + 二次确认）
+        services.AddSingleton<VoiceControlService>();
+        services.AddHostedService<VoiceControlService>(x => x.GetRequiredService<VoiceControlService>());
         // Classland CE: 桌面组件
         services.AddSingleton<CeDesktopLayoutService>();
         services.AddTransient<Views.CeDesktopWindow>();
@@ -136,6 +139,7 @@ public partial class App
         services.AddTransient<DebugPageViewModel>();
         services.AddTransient<RefreshingSettingsViewModel>();
         services.AddTransient<ClasslandCESettingsViewModel>();
+        services.AddTransient<VoiceControlSettingsViewModel>();
         // Views
         services.AddTransient<ITopmostEffectPlayer>(x => x.GetRequiredService<TopmostEffectWindow>());
         services.AddSingleton<MainWindow>();
@@ -190,6 +194,7 @@ public partial class App
         services.AddSettingsPage<ManagementPolicySettingsPage>();
         services.AddSettingsPage<ErrorSettingsPage>();
         services.AddSettingsPage<ClasslandCESettingsPage>();
+        services.AddSettingsPage<VoiceControlSettingsPage>();
         // 主界面组件
         services.AddComponent<TextComponent, TextComponentSettingsControl>();
         services.AddComponent<SeparatorComponent>();

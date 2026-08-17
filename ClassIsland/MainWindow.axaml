@@ -595,7 +595,7 @@
                 </Panel>
             </Canvas>
         </ZoomBorder>
-        
+
         <Border HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0 0 0 64"
                 IsVisible="{Binding ViewModel.IsEditMode}"
                 x:Name="OperateArea"

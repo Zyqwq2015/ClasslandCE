@@ -1,6 +1,17 @@
 # Classland CE — ClassIsland Community Edition
 
-基于 [ClassIsland](https://github.com/ClassIsland/ClassIsland) 的社区增强版（GPLv3）。
+> 🚧 **开发中 · 实验性版本，不建议用于生产环境**
+>
+> 本项目仍处于早期开发阶段（v0.0.1），功能可能不稳定、配置可能变动、部分特性尚未完成。**请谨慎使用，生产环境请勿部署。**
+
+| | |
+| --- | --- |
+| 当前版本 | **v0.0.1**（开发中） |
+| 维护者 | [Zyqwq2015](https://github.com/Zyqwq2015) |
+| 开源仓库 | <https://github.com/Zyqwq2015/ClasslandCE> |
+| 许可协议 | GNU General Public License v3 |
+
+基于 [ClassIsland](https://github.com/ClassIsland/ClassIsland) 的社区增强版（GPLv3）。ClassIsland 原项目版权归其贡献者所有，本仓库为其在 GPL-3.0 下的**修改版 / 派生作品**。
 
 ## 新增功能
 
@@ -55,12 +66,14 @@ dotnet run --project ClassIsland/ClassIsland.csproj -c Debug
 # 构建完成后，输出在 ./out/ce/，直接运行 ClassIsland.exe
 ```
 
-## GPLv3 合规说明
+## GPLv3 合规说明（重要）
 
-Classland CE 是 ClassIsland 的 GPLv3 派生版。所有新增代码（语音助手、播报模板、快速时间表、CE 设置页、构建脚本）同样基于 GPLv3 发布。
+Classland CE 是 [ClassIsland](https://github.com/ClassIsland/ClassIsland)（GPL-3.0）的**修改版 / 派生作品**，依照 GNU General Public License v3 发布。所有新增与修改代码（离线语音唤醒/指令控制、播报模板、快速时间表、CE 设置页、构建脚本等）同样基于 GPLv3 发布。
 
-- 上游项目：[ClassIsland](https://github.com/ClassIsland/ClassIsland)（GPL-3.0）
-- 本仓库地址：[ClassIsland/ClassIsland — master 分支](https://github.com/ClassIsland/ClassIsland)
+- **上游项目：** [ClassIsland](https://github.com/ClassIsland/ClassIsland)（GPL-3.0），版权归其原贡献者所有，本仓库完整保留其版权声明与许可文本（见 [LICENSE.txt](./LICENSE.txt)）。
+- **本仓库（修改版）：** [Zyqwq2015/ClasslandCE](https://github.com/Zyqwq2015/ClasslandCE)（GPL-3.0）
+- **修改声明（GPL-3.0 第 5 条）：** 本仓库在原始 ClassIsland 基础上进行了大量修改（新增离线语音唤醒/指令控制、播报模板、快速时间表、CE 设置页、构建脚本等），并变更了版本号（v0.0.1）与维护者信息（Zyqwq2015）。所有修改均在提交记录与本文档中标注。
+- **许可一致性：** 如您分发或修改本仓库的源码/二进制，须同样以 GPL-3.0 提供源码并保留本声明。
 
 ## 文件结构
 
@@ -83,4 +96,4 @@ README.md                            # 本文件
 
 ## 许可
 
-本项目基于 **GNU General Public License v3** 发布。
+本项目（Classland CE，v0.0.1，开发中）基于 **GNU General Public License v3** 发布，是 [ClassIsland](https://github.com/ClassIsland/ClassIsland) 的修改版。完整许可证文本见 [LICENSE.txt](./LICENSE.txt)。

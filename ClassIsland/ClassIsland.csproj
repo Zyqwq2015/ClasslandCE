@@ -11,6 +11,9 @@
         <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
         <AssemblyName>ClassIsland</AssemblyName>
         <RootNamespace>ClassIsland</RootNamespace>
+        <Authors>Zyqwq2015</Authors>
+        <Company>Zyqwq2015</Company>
+        <Copyright>Copyright © 2024-2026 Zyqwq2015（基于 ClassIsland，GPL-3.0；ClassIsland 原版权归其贡献者所有）</Copyright>
 		<IsMsix>$(IsMsix)</IsMsix>
 		<Configurations>Debug;Release;Debug_MSIX;Release_MSIX</Configurations>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -85,6 +88,10 @@
         <PackageReference Include="WindowsShortcutFactory" Version="1.1.0" />
         <PackageReference Include="ColorHelper" Version="1.8.1" />
         <PackageReference Include="NAudio" Version="2.2.1" />
+        <PackageReference Include="Whisper.net" Version="1.9.1" />
+        <!-- Whisper.net 仅含托管代码；原生推理库(whisper.dll 等)在独立运行时包中，
+             必须显式引用，否则发布后缺少原生库导致加载失败。 -->
+        <PackageReference Include="Whisper.net.Runtime" Version="1.9.1" />
         <PackageReference Include="AForge.Video.DirectShow" Version="2.2.5" />
         <PackageReference Include="AForge.Video" Version="2.2.5" />
         <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.3.0" />
@@ -111,6 +118,10 @@
     </ItemGroup>
     <ItemGroup>
         <None Include="..\..\.editorconfig" Link=".editorconfig" />
+    </ItemGroup>
+    <!-- Whisper 语音模型目录说明：发布到 <程序目录>/Models/README.txt，提示用户放置 ggml 模型 -->
+    <ItemGroup>
+        <None Include="Assets\VoiceWake\README.txt" Link="Models\README.txt" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
     <ItemGroup>
 <!--        <AvaloniaResource Include="Assets\**" />-->

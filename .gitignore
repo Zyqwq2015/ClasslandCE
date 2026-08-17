@@ -380,3 +380,6 @@ dotnet9-sdk.zip
 dl_sdk.sh
 dl_sdk9.sh
 make_ico.ps1
+
+# 已废弃的独立语音控制原型工程（已被 ClassIsland/Services/VoiceControl 取代，不入库）
+ClassIsland.VoiceControl/

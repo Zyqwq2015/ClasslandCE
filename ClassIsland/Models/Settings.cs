@@ -2685,6 +2685,99 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
         }
     }
 
+    // ===== Classland CE 语音唤醒控制 =====
+    private bool _ceIsVoiceControlEnabled = false;
+    private string _ceVoiceWakeWord = "小课小课";
+    private double _ceVoiceSensitivity = 0.6;
+    private double _ceVoiceMinWakeConfidence = 0.05;
+    private bool _ceVoiceLowPowerMode = false;
+    private string _ceVoiceWhisperModelPath = string.Empty;
+
+    /// <summary>
+    /// 是否启用语音唤醒控制（Classland CE）。默认关闭，需用户在设置中开启。
+    /// </summary>
+    public bool CeIsVoiceControlEnabled
+    {
+        get => _ceIsVoiceControlEnabled;
+        set
+        {
+            if (value == _ceIsVoiceControlEnabled) return;
+            _ceIsVoiceControlEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 语音唤醒词。默认「小课小课」。
+    /// </summary>
+    public string CeVoiceWakeWord
+    {
+        get => _ceVoiceWakeWord;
+        set
+        {
+            if (value == _ceVoiceWakeWord) return;
+            _ceVoiceWakeWord = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 唤醒灵敏度 0.0 - 1.0。
+    /// </summary>
+    public double CeVoiceSensitivity
+    {
+        get => _ceVoiceSensitivity;
+        set
+        {
+            if (value == _ceVoiceSensitivity) return;
+            _ceVoiceSensitivity = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 唤醒阶段专用最低置信度底线（远场友好）。默认 0.05。
+    /// </summary>
+    public double CeVoiceMinWakeConfidence
+    {
+        get => _ceVoiceMinWakeConfidence;
+        set
+        {
+            if (value == _ceVoiceMinWakeConfidence) return;
+            _ceVoiceMinWakeConfidence = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 低功耗模式：降低识别轮询频率以节省 CPU。
+    /// </summary>
+    public bool CeVoiceLowPowerMode
+    {
+        get => _ceVoiceLowPowerMode;
+        set
+        {
+            if (value == _ceVoiceLowPowerMode) return;
+            _ceVoiceLowPowerMode = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// Whisper 离线识别模型（ggml 格式）的绝对路径；留空则默认使用
+    /// 程序目录下 Models/ggml-model.bin。需用户自行从 HuggingFace 下载（如 ggml-small.bin）。
+    /// </summary>
+    public string CeVoiceWhisperModelPath
+    {
+        get => _ceVoiceWhisperModelPath;
+        set
+        {
+            if (value == _ceVoiceWhisperModelPath) return;
+            _ceVoiceWhisperModelPath = value;
+            OnPropertyChanged();
+        }
+    }
+
     /// <summary>
     /// 课前播报模板，支持 {subject} {teacher} {startTime} {endTime} {location} {subjectIndex} 占位符
     /// </summary>

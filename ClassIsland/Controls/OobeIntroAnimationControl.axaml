@@ -74,8 +74,10 @@
             <Border Classes="block" />
             <Border Classes="block" />
             <Border Classes="block" />
+            <Border Classes="block" />
             <Border Classes="block sp-anim" />
             <Border Classes="block sp-anim2" />
+            <Border Classes="block" />
             <Border Classes="block" />
             <Border Classes="block" />
             <Border Classes="block" />
@@ -139,6 +141,9 @@
             <TextBlock Text="a" Classes="text"/>
             <TextBlock Text="n" Classes="text"/>
             <TextBlock Text="d" Classes="text"/>
+            <TextBlock Text=" " Classes="text"/>
+            <TextBlock Text="C" Classes="text"/>
+            <TextBlock Text="E" Classes="text"/>
         </StackPanel>
     </Grid>
 </UserControl>

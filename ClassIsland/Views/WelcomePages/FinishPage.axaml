@@ -50,7 +50,7 @@
                         <TextBlock Text="完成" HorizontalAlignment="Center"
                                    Margin="0 0 0 4"
                                    Theme="{StaticResource SubtitleTextBlockStyle}"/>
-                        <TextBlock Text="恭喜！应用的基本设置已完成，感谢您选用 ClassIsland。点击【&#xE423;】以结束设置向导。" HorizontalAlignment="Center"/>
+                        <TextBlock Text="恭喜！应用的基本设置已完成，感谢您选用 ClassIsland CE。作者 Zyqwq。点击【&#xE423;】以结束设置向导。" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </Carousel.Items>

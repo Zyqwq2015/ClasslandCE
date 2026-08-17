@@ -55,6 +55,9 @@
                 <TextBlock Text="a" />
                 <TextBlock Text="n" />
                 <TextBlock Text="d" />
+                <TextBlock Text=" " />
+                <TextBlock Text="C" />
+                <TextBlock Text="E" />
             </StackPanel>
 
             <StackPanel Grid.Row="2" Spacing="4" VerticalAlignment="Top" HorizontalAlignment="Center">

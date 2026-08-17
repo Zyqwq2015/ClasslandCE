@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ClassIsland.Views"
+        mc:Ignorable="d"
+        x:Class="ClassIsland.Views.VoiceControlConfirmWindow"
+        Title="操作确认"
+        Width="420" Height="210"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        SystemDecorations="None"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent">
+    <Border CornerRadius="12" Background="#CC1E1E1E" BorderBrush="#FF5A5A" BorderThickness="1.5"
+            Padding="22">
+        <StackPanel Spacing="14">
+            <TextBlock x:Name="MessageText" FontSize="16" FontWeight="SemiBold"
+                       Foreground="White" TextWrapping="Wrap" HorizontalAlignment="Center" />
+            <ProgressBar x:Name="CountdownBar" Height="6" Minimum="0" Maximum="15" Value="15"
+                         Foreground="#FF5A5A" Background="#444444" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16">
+                <Button x:Name="ConfirmButton" Content="确认执行" Width="120" Height="36"
+                        Background="#C0392B" Foreground="White" BorderThickness="0" Click="OnConfirmClick" />
+                <Button x:Name="CancelButton" Content="取消" Width="120" Height="36"
+                        Background="#555555" Foreground="White" BorderThickness="0" Click="OnCancelClick" />
+            </StackPanel>
+            <TextBlock FontSize="11" Foreground="#AAAAAA" HorizontalAlignment="Center"
+                       Text="可点击「确认执行」；倒计时结束（15 秒）将自动取消，绝不自动执行高危操作。" />
+        </StackPanel>
+    </Border>
+</Window>
