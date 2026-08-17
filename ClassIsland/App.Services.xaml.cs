@@ -199,6 +199,12 @@ public partial class App
         services.AddComponent<RollingComponent, RollingComponentSettingsControl>();
         services.AddComponent<GroupComponent>();
         services.AddComponent<StackComponent>();
+        // Classland CE 增强组件
+        services.AddComponent<HourglassComponent, HourglassComponentSettingsControl>();
+        services.AddComponent<PomodoroComponent, PomodoroComponentSettingsControl>();
+        services.AddComponent<LessonShortcutComponent, LessonShortcutComponentSettingsControl>();
+        services.AddComponent<VolumeLevelComponent, VolumeLevelComponentSettingsControl>();
+        services.AddComponent<CameraFeedComponent, CameraFeedComponentSettingsControl>();
         // 提醒提供方
         services.AddNotificationProvider<ClassNotificationProvider, ClassNotificationProviderSettingsControl>();
         services.AddNotificationProvider<AfterSchoolNotificationProvider, AfterSchoolNotificationProviderSettingsControl>();
@@ -303,18 +309,18 @@ public partial class App
         {
             Id = "classisland.classic",
             Name = "经典",
-            Description = "ClassIsland 的经典外观。",
+            Description = "ClassIsland CE 的经典外观。",
             Banner = "avares://ClassIsland/Assets/XamlThemePreviews/classisland.classic.png",
-            Author = "ClassIsland",
+            Author = "ClassIsland CE",
             Url = "https://github.com/ClassIsland/ClassIsland"
         });
         services.AddXamlTheme(new Uri("avares://ClassIsland/XamlThemes/FluentTheme/Styles.axaml"), new ThemeManifest()
         {
             Id = "classisland.fluent",
             Name = "Fluent",
-            Description = "焕然一新的 ClassIsland 外观。",
+            Description = "焕然一新的 ClassIsland CE 外观。",
             Banner = "avares://ClassIsland/Assets/XamlThemePreviews/classisland.fluent.png",
-            Author = "ClassIsland",
+            Author = "ClassIsland CE",
             Url = "https://github.com/ClassIsland/ClassIsland",
             VerticalSafeAreaPx = 20
         });

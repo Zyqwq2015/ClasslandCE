@@ -15,7 +15,7 @@ public class EmptySplashScreen : IApplicationSplashScreen
     {
     }
 
-    public string AppName { get; } = "ClassIsland";
+    public string AppName { get; } = "ClassIsland CE";
 
     public IImage AppIcon { get; } =
         new Bitmap(AssetLoader.Open(new Uri("avares://ClassIsland/Assets/AppLogo@384w.png")));

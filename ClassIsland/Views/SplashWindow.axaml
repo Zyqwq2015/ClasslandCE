@@ -52,7 +52,7 @@
                         </Style>
                     </asyncImageLoader:AdvancedImage.Styles>
                 </asyncImageLoader:AdvancedImage>
-                <TextBlock Text="ClassIsland" 
+                <TextBlock Text="ClassIsland CE" 
                            VerticalAlignment="Center"
                            FontSize="20"
                            FontWeight="Medium"
@@ -86,7 +86,7 @@
                        FontSize="9"
                        Opacity="0.5"
                        Margin="-16 0 0 -14">
-                <Run Text="ClassIsland"/>
+                <Run Text="ClassIsland CE"/>
                 <Run Text="{x:Static ci:AppBase.AppVersionLong}"/>
             </TextBlock>
             <Canvas Height="4" Width="400" Grid.Row="3" VerticalAlignment="Bottom"

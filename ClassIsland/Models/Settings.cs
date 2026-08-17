@@ -2667,6 +2667,7 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
     private int _ceQuickTimeLayoutBreakMinutes = 10;
     private int _ceQuickTimeLayoutClassCount = 8;
     private bool _ceIsAutoStartEnabled = false;
+    private bool _ceIsDeepThemeCustomization = false;
 
     /// <summary>
     /// 是否启用语音助手（Classland CE）
@@ -2832,6 +2833,20 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
         {
             if (value == _ceIsAutoStartEnabled) return;
             _ceIsAutoStartEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 是否启用深度主题定制（启动时使用 CE 专属壁纸）
+    /// </summary>
+    public bool CeIsDeepThemeCustomization
+    {
+        get => _ceIsDeepThemeCustomization;
+        set
+        {
+            if (value == _ceIsDeepThemeCustomization) return;
+            _ceIsDeepThemeCustomization = value;
             OnPropertyChanged();
         }
     }

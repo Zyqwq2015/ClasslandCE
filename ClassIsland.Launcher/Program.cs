@@ -97,7 +97,7 @@ void ShowError(string message)
 {
 #if Platforms_Windows
     PInvoke.MessageBox(HWND.Null, message,
-        "ClassIsland", MESSAGEBOX_STYLE.MB_APPLMODAL | MESSAGEBOX_STYLE.MB_ICONSTOP);
+        "ClassIsland CE", MESSAGEBOX_STYLE.MB_APPLMODAL | MESSAGEBOX_STYLE.MB_ICONSTOP);
 #else
     Console.Error.WriteLine(message);
 #endif

@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
@@ -132,7 +134,7 @@ public class VoiceAssistantService : IHostedService
                         {
                             Text = "支持指令：下一节课、今天课表、现在上什么课、现在几点、打开浏览器、打开设置、" +
                                    "打开记事本、打开计算器、显示课表、隐藏课表、今天星期几、谢谢",
-                            TextWrapping = TextWrapping.Wrap,
+                            TextWrapping = Avalonia.Media.TextWrapping.Wrap,
                             FontSize = 12,
                             Foreground = Avalonia.Media.Brushes.Gray,
                             Margin = new Thickness(0, 8, 0, 0)
@@ -298,7 +300,7 @@ public class VoiceAssistantService : IHostedService
     private void HandleCurrentTime()
     {
         var now = ExactTimeService.GetCurrentLocalDateTime();
-        SpeechService.EnqueueSpeechQueue($"现在是{now.Hours}点{now.Minutes:D2}分。");
+        SpeechService.EnqueueSpeechQueue($"现在是{now.Hour}点{now.Minute:D2}分。");
     }
 
     private void HandleOpenSettings()

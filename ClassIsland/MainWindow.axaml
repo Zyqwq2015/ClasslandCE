@@ -49,7 +49,7 @@
         <profile:ClassPlan x:Key="FallbackClassPlan"/>
         
         <NativeMenu x:Key="AppMenu">
-            <NativeMenuItem Header="ClassIsland" Click="MenuItemAbout_OnClick">
+            <NativeMenuItem Header="ClassIsland CE" Click="MenuItemAbout_OnClick">
                 <NativeMenuItem.Icon>
                     <OnPlatform Default="Assets/AppLogo.png">
                         <On Content="{x:Null}" Options="macOS"/>
@@ -172,7 +172,7 @@
             <Setter Property="CanResize" Value="False"/>
             <Setter Property="CanMaximize" Value="False"/>
             <Setter Property="CanMinimize" Value="False"/>
-            <Setter Property="Title" Value="ClassIsland"/>
+            <Setter Property="Title" Value="ClassIsland CE"/>
         </Style>
         <Style Selector=":is(Window):edit-mode">
             <Setter Property="Background" Value="{DynamicResource SmokeFillColorDefaultBrush}"/>

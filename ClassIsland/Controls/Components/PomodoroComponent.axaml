@@ -1,0 +1,29 @@
+﻿<controls:ComponentBase x:TypeArguments="componentSettings:PomodoroComponentSettings"
+                        x:Class="ClassIsland.Controls.Components.PomodoroComponent"
+                        xmlns="https://github.com/avaloniaui"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:d="http://schemas.openxmlformats.org/expression/blend/2008"
+                        xmlns:local="clr-namespace:ClassIsland.Controls.Components"
+                        xmlns:controls="clr-namespace:ClassIsland.Core.Abstractions.Controls;assembly=ClassIsland.Core"
+                        xmlns:componentSettings="clr-namespace:ClassIsland.Models.ComponentSettings"
+                        mc:Ignorable="d"
+                        d:DesignHeight="100" d:DesignWidth="200">
+    <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:PomodoroComponent}}"
+          VerticalAlignment="Center" HorizontalAlignment="Center">
+        <StackPanel Spacing="6" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                <TextBlock x:Name="SessionText" Text="🍅 工作" FontSize="14" VerticalAlignment="Center"/>
+                <TextBlock x:Name="TimeText" FontSize="22" FontWeight="Bold" VerticalAlignment="Center"
+                           Foreground="{DynamicResource AccentFillColorDefaultBrush}"/>
+                <TextBlock x:Name="CountText" Text="0" FontSize="11" VerticalAlignment="Center"
+                           Opacity="0.6" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6">
+                <Button x:Name="StartPauseButton" Content="开始" FontSize="11" Padding="10 2" Click="StartPauseButton_OnClick"/>
+                <Button x:Name="ResetButton" Content="重置" FontSize="11" Padding="10 2" Click="ResetButton_OnClick"/>
+                <Button x:Name="SkipButton" Content="跳过" FontSize="11" Padding="10 2" Click="SkipButton_OnClick"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</controls:ComponentBase>

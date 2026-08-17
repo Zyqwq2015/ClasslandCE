@@ -237,7 +237,7 @@ public class ManagementService : IManagementService
 
         var dialog = new TaskDialog
         {
-            Title = "ClassIsland",
+            Title = "ClassIsland CE",
             SubHeader = "加入集控",
             Content = $"确定要加入组织 {mf.OrganizationName} 的管理吗？",
             Buttons =
@@ -287,7 +287,7 @@ public class ManagementService : IManagementService
         
         var dialog = new TaskDialog
         {
-            Title = "ClassIsland",
+            Title = "ClassIsland CE",
             SubHeader = "退出集控",
             Content = $"确定要退出组织 {Manifest.OrganizationName} 的管理吗？",
             Buttons =

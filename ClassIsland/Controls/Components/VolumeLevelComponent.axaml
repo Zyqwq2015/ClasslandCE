@@ -1,0 +1,36 @@
+﻿<controls:ComponentBase x:TypeArguments="componentSettings:VolumeLevelComponentSettings"
+                        x:Class="ClassIsland.Controls.Components.VolumeLevelComponent"
+                        xmlns="https://github.com/avaloniaui"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:d="http://schemas.openxmlformats.org/expression/blend/2008"
+                        xmlns:local="clr-namespace:ClassIsland.Controls.Components"
+                        xmlns:controls="clr-namespace:ClassIsland.Core.Abstractions.Controls;assembly=ClassIsland.Core"
+                        xmlns:componentSettings="clr-namespace:ClassIsland.Models.ComponentSettings"
+                        mc:Ignorable="d"
+                        d:DesignHeight="80" d:DesignWidth="200">
+    <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:VolumeLevelComponent}}"
+          Width="180" Height="60"
+          VerticalAlignment="Center" HorizontalAlignment="Center">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
+            <TextBlock x:Name="IconText" Text="&#xE767;" FontFamily="Segoe Fluent Icons" FontSize="20"
+                       VerticalAlignment="Center" Foreground="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <!-- 电平条（10 段） -->
+            <ItemsControl x:Name="Bars">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="2" VerticalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border x:Name="Bar" Width="6" Height="30" CornerRadius="2"
+                                Background="{DynamicResource ControlStrongStrokeColorDefaultBrush}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <TextBlock x:Name="PercentText" Text="0%" FontSize="11" VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" Width="36" TextAlignment="Right"/>
+        </StackPanel>
+    </Grid>
+</controls:ComponentBase>

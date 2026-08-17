@@ -1,0 +1,23 @@
+﻿<controls:ComponentBase x:TypeArguments="componentSettings:CameraFeedComponentSettings"
+                        x:Class="ClassIsland.Controls.Components.CameraFeedComponent"
+                        xmlns="https://github.com/avaloniaui"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:d="http://schemas.openxmlformats.org/expression/blend/2008"
+                        xmlns:local="clr-namespace:ClassIsland.Controls.Components"
+                        xmlns:controls="clr-namespace:ClassIsland.Core.Abstractions.Controls;assembly=ClassIsland.Core"
+                        xmlns:componentSettings="clr-namespace:ClassIsland.Models.ComponentSettings"
+                        mc:Ignorable="d"
+                        d:DesignHeight="120" d:DesignWidth="160">
+    <Border DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:CameraFeedComponent}}"
+            Background="#22000000" CornerRadius="6" ClipToBounds="True"
+            Width="160" Height="120" VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Grid>
+            <Image x:Name="VideoImage" Stretch="UniformToFill"/>
+            <TextBlock x:Name="StateText" Text="正在启动摄像头…"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       IsVisible="False"/>
+        </Grid>
+    </Border>
+</controls:ComponentBase>

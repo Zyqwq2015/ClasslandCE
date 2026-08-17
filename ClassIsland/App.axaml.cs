@@ -775,7 +775,7 @@ public partial class App : AppBase, IAppHost
             {
                 var dialog = new TaskDialog()
                 {
-                    Title = "ClassIsland",
+                    Title = "ClassIsland CE",
                     Header = "当前界面缩放是否正常？",
                     Content = "如果您发现当前界面缩放相对系统缩放过小，可点击【不正常】按钮使应用启用兼容缩放模式，以缓解在部分平台上的缩放异常的问题。",
                     XamlRoot = GetRootWindow(),

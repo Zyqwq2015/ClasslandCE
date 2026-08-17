@@ -6,11 +6,13 @@
         <OutputType>Exe</OutputType>
         <BaseFramework>net8.0</BaseFramework>
         <ApplicationId>cn.classisland.app</ApplicationId>
-        <Company>ClassIsland</Company>
-        <Product>ClassIsland</Product>
+        <Company>ClassIsland CE</Company>
+        <Product>ClassIsland CE</Product>
         <SatelliteResourceLanguages>en;zh-cn</SatelliteResourceLanguages>
-        <Title>ClassIsland</Title>
-        <AssemblyTitle>ClassIsland</AssemblyTitle>
+        <Title>ClassIsland CE</Title>
+        <AssemblyTitle>ClassIsland CE</AssemblyTitle>
+        <AssemblyName>ClasslandCE</AssemblyName>
+        <ApplicationIcon>Assets\AppLogo.ico</ApplicationIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(PublishBuilding)'=='true' And '$(PublishPlatform)'=='macos'">
         <!-- Preserve PublishFolderType from referenced projects for macOS app bundle resources. -->

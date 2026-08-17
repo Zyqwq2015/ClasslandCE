@@ -93,7 +93,7 @@
                         </Style>
                     </Image.Style>
                 </Image>
-                <TextBlock Text="ClassIsland" 
+                <TextBlock Text="ClassIsland CE" 
                            VerticalAlignment="Center"
                            FontSize="20"
                            FontWeight="Medium">
@@ -137,7 +137,7 @@
                        FontSize="9"
                        Opacity="0.5"
                        Margin="-16 0 0 -14">
-                <Run Text="ClassIsland"/>
+                <Run Text="ClassIsland CE"/>
                 <Run Text="{x:Static classIsland:App.AppVersionLong}"/>
             </TextBlock>
             <ProgressBar Grid.Row="3"

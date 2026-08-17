@@ -6,12 +6,12 @@ using ClassIsland;
 [assembly: AssemblyVersion("0.0.0.0")]
 [assembly: AssemblyInformationalVersion("NIXBUILD+NIXBUILD_LONG_HASH")]
 #else
-[assembly: AssemblyVersion(GitInfo.Tag)]
+[assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion($"{GitInfo.Tag}+{GitInfo.CommitHash}")]
 #endif
 
-[assembly: AssemblyTitle("ClassIsland")]
-[assembly: AssemblyProduct("ClassIsland")]
+[assembly: AssemblyTitle("ClassIsland CE")]
+[assembly: AssemblyProduct("ClassIsland CE")]
 #if NETCOREAPP
 // [assembly: SupportedOSPlatform("Windows")]
 #endif

@@ -8,7 +8,7 @@
         xmlns:input="clr-namespace:Avalonia.Labs.Input;assembly=Avalonia.Labs.CommandManager"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ClassIsland.Views.WelcomeWindow"
-        Title="ClassIsland"
+        Title="ClassIsland CE"
         Loaded="Control_OnLoaded"
         d:DataContext="{d:DesignInstance views:WelcomeWindow}"
         Width="800" Height="600"

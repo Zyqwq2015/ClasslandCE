@@ -50,12 +50,13 @@
                     <ItemsControl ItemsSource="{Binding ViewModel.SpeechTemplatePresets}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel Spacing="8" />
+                                <WrapPanel />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Button Content="{Binding}"
+                                        Margin="4"
                                         Classes="accent"
                                         Command="{Binding $parent[StackPanel].DataContext.ViewModel.ApplyTemplatePresetCommand}"
                                         CommandParameter="{Binding $parent[ItemsControl].ItemIndex}" />
@@ -135,6 +136,16 @@
                     <Button Content="生成时间表"
                             Command="{Binding ViewModel.GenerateQuickTimeLayoutCommand}"
                             HorizontalAlignment="Stretch" />
+                </StackPanel>
+            </controls3:SettingsExpander>
+
+            <!-- ===== 3.5 深度主题定制 ===== -->
+            <controls1:IconText Glyph="&#xE7F4;" Text="深度主题定制" Margin="0 16 0 4" />
+            <controls3:SettingsExpander IconSource="{ci:FluentIconSource &#xE7F4;}"
+                                        Header="深度主题定制"
+                                        Description="勾选后立即把 Windows 桌面壁纸换成 ClassIsland CE 专属壁纸；取消勾选则还原原壁纸。">
+                <StackPanel Spacing="8" Margin="0 8 0 8">
+                    <ToggleSwitch IsChecked="{Binding ViewModel.SettingsService.Settings.CeIsDeepThemeCustomization, Mode=TwoWay}" />
                 </StackPanel>
             </controls3:SettingsExpander>
 

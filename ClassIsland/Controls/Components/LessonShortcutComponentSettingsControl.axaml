@@ -1,0 +1,50 @@
+﻿<controls:ComponentBase x:TypeArguments="componentSettings:LessonShortcutComponentSettings"
+                        x:Class="ClassIsland.Controls.Components.LessonShortcutComponentSettingsControl"
+                        xmlns="https://github.com/avaloniaui"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:d="http://schemas.openxmlformats.org/expression/blend/2008"
+                        xmlns:local="clr-namespace:ClassIsland.Controls.Components"
+                        xmlns:controls="clr-namespace:ClassIsland.Core.Abstractions.Controls;assembly=ClassIsland.Core"
+                        xmlns:componentSettings="clr-namespace:ClassIsland.Models.ComponentSettings"
+                        xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                        xmlns:controls1="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+                        mc:Ignorable="d"
+                        d:DesignHeight="450" d:DesignWidth="800">
+    <ScrollViewer>
+        <StackPanel Classes="component-settings-container animated-intro"
+                    DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:LessonShortcutComponentSettingsControl}}">
+            <controls1:SettingsExpander IconSource="{ci:FluentIconSource &#xE8A5;}"
+                                        Header="按钮文字"
+                                        Description="显示在按钮上的文字，如语文、数学、英语。">
+                <controls1:SettingsExpander.Footer>
+                    <TextBox Width="180" Text="{Binding Settings.ButtonLabel, UpdateSourceTrigger=PropertyChanged}"/>
+                </controls1:SettingsExpander.Footer>
+            </controls1:SettingsExpander>
+
+            <controls1:SettingsExpander IconSource="{ci:FluentIconSource &#xE790;}"
+                                        Header="图标"
+                                        Description="Segoe Fluent Icons 字符码，如 E8A5=书本、E9F9=文件夹、E8F4=任务管理。">
+                <controls1:SettingsExpander.Footer>
+                    <TextBox Width="180" Text="{Binding Settings.Icon, UpdateSourceTrigger=PropertyChanged}"/>
+                </controls1:SettingsExpander.Footer>
+            </controls1:SettingsExpander>
+
+            <controls1:SettingsExpander IconSource="{ci:FluentIconSource &#xE8B7;}"
+                                        Header="目标路径"
+                                        Description="点击要打开的文件/程序/网址，支持 %USERPROFILE% 等环境变量。">
+                <controls1:SettingsExpander.Footer>
+                    <TextBox Width="280" Text="{Binding Settings.TargetPath, UpdateSourceTrigger=PropertyChanged}"/>
+                </controls1:SettingsExpander.Footer>
+            </controls1:SettingsExpander>
+
+            <controls1:SettingsExpander IconSource="{ci:FluentIconSource &#xE70F;}"
+                                        Header="命令行参数"
+                                        Description="可选的启动参数。">
+                <controls1:SettingsExpander.Footer>
+                    <TextBox Width="180" Text="{Binding Settings.Arguments, UpdateSourceTrigger=PropertyChanged}"/>
+                </controls1:SettingsExpander.Footer>
+            </controls1:SettingsExpander>
+        </StackPanel>
+    </ScrollViewer>
+</controls:ComponentBase>

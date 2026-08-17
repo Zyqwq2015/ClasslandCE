@@ -1,0 +1,43 @@
+﻿<controls:ComponentBase x:TypeArguments="componentSettings:HourglassComponentSettings"
+                        x:Class="ClassIsland.Controls.Components.HourglassComponent"
+                        xmlns="https://github.com/avaloniaui"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:d="http://schemas.openxmlformats.org/expression/blend/2008"
+                        xmlns:local="clr-namespace:ClassIsland.Controls.Components"
+                        xmlns:controls="clr-namespace:ClassIsland.Core.Abstractions.Controls;assembly=ClassIsland.Core"
+                        xmlns:componentSettings="clr-namespace:ClassIsland.Models.ComponentSettings"
+                        mc:Ignorable="d"
+                        d:DesignHeight="120" d:DesignWidth="160">
+    <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:HourglassComponent}}"
+          Width="140" Height="120"
+          VerticalAlignment="Center" HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 沙漏图形 -->
+        <Canvas Grid.Row="0" Width="140" Height="96" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <!-- 沙漏边框 -->
+            <Path Data="M 20,5 L 120,5 L 120,20 L 105,48 L 120,76 L 120,91 L 20,91 L 20,76 L 35,48 L 20,20 Z"
+                  Stroke="{DynamicResource ControlStrongStrokeColorDefaultBrush}"
+                  StrokeThickness="2.5"
+                  StrokeJoin="Round" Fill="Transparent"/>
+            <!-- 上瓶沙（随剩余时间减小） -->
+            <Path x:Name="SandTop" Fill="{DynamicResource AccentFillColorDefaultBrush}"/>
+            <!-- 下瓶沙（随剩余时间增大） -->
+            <Path x:Name="SandBottom" Fill="{DynamicResource AccentFillColorDefaultBrush}"/>
+        </Canvas>
+
+        <!-- 时间文本 -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6">
+            <TextBlock x:Name="TimeText" FontSize="14" VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+            <Button x:Name="ToggleButton" Content="暂停" FontSize="11" Padding="6 1"
+                    VerticalAlignment="Center" Click="ToggleButton_OnClick"/>
+            <Button x:Name="ResetButton" Content="重置" FontSize="11" Padding="6 1"
+                    VerticalAlignment="Center" Click="ResetButton_OnClick"/>
+        </StackPanel>
+    </Grid>
+</controls:ComponentBase>

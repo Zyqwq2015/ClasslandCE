@@ -10,10 +10,10 @@ using ClassIsland.ViewModels.SettingsPages;
 namespace ClassIsland.Views.SettingPages;
 
 /// <summary>
-/// Classland CE 增强功能设置页
+/// ClassIsland CE 增强功能设置页
 /// </summary>
 [Group("classisland.general")]
-[SettingsPageInfo("classland-ce", "Classland CE", "\uE8CA", "\uE8CA", SettingsPageCategory.Internal)]
+[SettingsPageInfo("classland-ce", "ClassIsland CE", "\uE8CA", "\uE8CA", SettingsPageCategory.Internal)]
 public partial class ClasslandCESettingsPage : SettingsPageBase
 {
     public ClasslandCESettingsViewModel ViewModel { get; } = IAppHost.GetService<ClasslandCESettingsViewModel>();

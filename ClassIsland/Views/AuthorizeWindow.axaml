@@ -21,7 +21,7 @@
         Topmost="True"
         ShowAsDialog="True"
         CanMaximize="False"
-        Title="ClassIsland">
+        Title="ClassIsland CE">
     <input:CommandManager.CommandBindings>
         <input:CommandBinding Command="{x:Static ci:AuthorizeProviderControlBase.CompleteAuthorizeCommand}" Executed="CommandBindingCompleteAuthorize_OnExecuted"></input:CommandBinding>
     </input:CommandManager.CommandBindings>

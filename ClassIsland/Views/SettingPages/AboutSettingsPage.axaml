@@ -185,7 +185,7 @@
             </Grid>
         </controls1:StickyScrollViewer.HeaderContent>
         <StackPanel Classes="settings-container ">
-            <controls3:SettingsExpander Header="ClassIsland"
+            <controls3:SettingsExpander Header="ClassIsland CE"
                                         IsExpanded="True">
                 <controls3:SettingsExpander.Footer>
                     <TextBlock Text="{x:Static local:AboutSettingsPage.DisplayVersion}"

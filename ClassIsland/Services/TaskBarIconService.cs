@@ -34,7 +34,7 @@ public class TaskBarIconService : IHostedService, ITaskBarIconService
     } = new()
     {
         Icon = new WindowIcon(OperatingSystem.IsMacOS() ? "../Resources/Assets/AppLogo_Monochrome.png" : "Assets/AppLogo.png"),
-        ToolTipText = "ClassIsland"
+        ToolTipText = "ClassIsland CE"
     };
 
     public IList<NativeMenuItemBase> MoreOptionsMenuItems => MoreOptionsMenu!.Items;
