@@ -371,3 +371,12 @@ cipx/
 
 **/.idea/avalonia.xml
 **/.idea/copilot.*
+
+# Classland CE 构建辅助临时文件
+.sdkparts/
+.sdk9parts/
+dotnet8-sdk.zip
+dotnet9-sdk.zip
+dl_sdk.sh
+dl_sdk9.sh
+make_ico.ps1
