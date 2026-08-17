@@ -2668,6 +2668,8 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
     private int _ceQuickTimeLayoutClassCount = 8;
     private bool _ceIsAutoStartEnabled = false;
     private bool _ceIsDeepThemeCustomization = false;
+    private bool _ceIsDesktopWidgetsEnabled = false;
+    private bool _ceIsDesktopWidgetsEditMode = false;
 
     /// <summary>
     /// 是否启用语音助手（Classland CE）
@@ -2847,6 +2849,34 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
         {
             if (value == _ceIsDeepThemeCustomization) return;
             _ceIsDeepThemeCustomization = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 是否启用桌面组件层（壁纸上的浮动组件）
+    /// </summary>
+    public bool CeIsDesktopWidgetsEnabled
+    {
+        get => _ceIsDesktopWidgetsEnabled;
+        set
+        {
+            if (value == _ceIsDesktopWidgetsEnabled) return;
+            _ceIsDesktopWidgetsEnabled = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 是否启用桌面组件编辑模式
+    /// </summary>
+    public bool CeIsDesktopWidgetsEditMode
+    {
+        get => _ceIsDesktopWidgetsEditMode;
+        set
+        {
+            if (value == _ceIsDesktopWidgetsEditMode) return;
+            _ceIsDesktopWidgetsEditMode = value;
             OnPropertyChanged();
         }
     }

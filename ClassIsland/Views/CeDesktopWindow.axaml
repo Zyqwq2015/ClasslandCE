@@ -1,0 +1,43 @@
+<Window x:Class="ClassIsland.Views.CeDesktopWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.openxmlformats.org/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ClassIsland.Controls"
+        mc:Ignorable="d"
+        Width="400" Height="300"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        SystemDecorations="None"
+        ExtendClientAreaToDecorationsHint="True"
+        Topmost="False"
+        ShowInTaskbar="False"
+        IsHitTestVisible="True"
+        WindowStartupLocation="Manual">
+    <!-- 桌面组件画布：全屏铺满，子组件自由摆放 -->
+    <Canvas x:Name="WidgetsCanvas"
+            Background="Transparent"
+            PointerPressed="Canvas_OnPointerPressed"
+            PointerMoved="Canvas_OnPointerMoved"
+            PointerReleased="Canvas_OnPointerReleased">
+
+        <!-- 编辑模式底部工具栏：添加组件 + 完成编辑 -->
+        <Border x:Name="EditToolbarPanel"
+                Background="#E6202020"
+                CornerRadius="10"
+                Padding="12 8"
+                IsVisible="False"
+                ZIndex="1000">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="桌面组件编辑模式" FontSize="13" Foreground="White" VerticalAlignment="Center"/>
+                <Button x:Name="AddHourglassButton" Content="＋ 沙漏" Click="AddHourglassButton_OnClick" Margin="8 0 0 0"/>
+                <Button x:Name="AddShortcutButton" Content="＋ 课件快捷方式" Click="AddShortcutButton_OnClick" Margin="4 0 0 0"/>
+                <Button x:Name="AddPomodoroButton" Content="＋ 番茄时钟" Click="AddPomodoroButton_OnClick" Margin="4 0 0 0"/>
+                <Button x:Name="AddClockButton" Content="＋ 时钟" Click="AddClockButton_OnClick" Margin="4 0 0 0"/>
+                <Button x:Name="ExitEditModeButton" Content="✓ 完成编辑" Click="ExitEditModeButton_OnClick" Margin="12 0 0 0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- 右键菜单占位（在代码中动态构建） -->
+    </Canvas>
+</Window>

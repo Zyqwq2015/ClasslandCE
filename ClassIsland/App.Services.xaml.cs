@@ -103,6 +103,9 @@ public partial class App
         // Classland CE
         services.AddSingleton<VoiceAssistantService>();
         services.AddHostedService<VoiceAssistantService>(x => x.GetRequiredService<VoiceAssistantService>());
+        // Classland CE: 桌面组件
+        services.AddSingleton<CeDesktopLayoutService>();
+        services.AddTransient<Views.CeDesktopWindow>();
         // ViewModels
         services.AddTransient<ProfileSettingsViewModel>();
         services.AddTransient<DevPortalViewModel>();

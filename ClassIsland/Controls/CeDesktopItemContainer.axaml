@@ -1,0 +1,71 @@
+<UserControl x:Class="ClassIsland.Controls.CeDesktopItemContainer"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.openxmlformats.org/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:ClassIsland.Controls"
+             mc:Ignorable="d"
+             d:DesignHeight="160" d:DesignWidth="220"
+             x:CompileBindings="False">
+    <!-- 编辑模式边框 + 8 控制点 + 标题栏 -->
+    <Grid x:Name="RootGrid">
+        <Border x:Name="EditBorder"
+                BorderBrush="#FFFFFFFF"
+                BorderThickness="1.5"
+                CornerRadius="6"
+                IsVisible="False"
+                IsHitTestVisible="False"
+                Background="Transparent">
+            <!-- 顶部工具条：拖动 + 删除 + 设置 -->
+            <Border x:Name="EditToolbar"
+                    Background="#CC202020"
+                    CornerRadius="6 6 0 0"
+                    Height="28"
+                    VerticalAlignment="Top"
+                    IsHitTestVisible="True">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="ItemNameText"
+                               Text="组件"
+                               FontSize="11"
+                               Foreground="White"
+                               VerticalAlignment="Center"
+                               Margin="8 0"/>
+                    <Button x:Name="SettingsButton"
+                            Grid.Column="1"
+                            Content="⚙"
+                            Width="24" Height="22"
+                            Background="Transparent" BorderThickness="0"
+                            Foreground="White" FontSize="13"
+                            Click="SettingsButton_OnClick"
+                            ToolTip.Tip="设置"/>
+                    <Button x:Name="DeleteButton"
+                            Grid.Column="2"
+                            Content="✕"
+                            Width="24" Height="22"
+                            Background="Transparent" BorderThickness="0"
+                            Foreground="#FFFF6B6B" FontSize="13"
+                            Click="DeleteButton_OnClick"
+                            ToolTip.Tip="删除"/>
+                </Grid>
+            </Border>
+        </Border>
+
+        <!-- 组件内容 -->
+        <ContentPresenter x:Name="ContentHost"/>
+
+        <!-- 8 个缩放控制点（编辑模式显示） -->
+        <Border x:Name="ResizeHandleTL" Classes="resize-handle" Cursor="SizeNWSE" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleTR" Classes="resize-handle" Cursor="SizeNESW" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleBL" Classes="resize-handle" Cursor="SizeNESW" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleBR" Classes="resize-handle" Cursor="SizeNWSE" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleL" Classes="resize-handle" Cursor="SizeWE" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleR" Classes="resize-handle" Cursor="SizeWE" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleT" Classes="resize-handle" Cursor="SizeNS" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleB" Classes="resize-handle" Cursor="SizeNS" IsVisible="False" IsHitTestVisible="True"/>
+    </Grid>
+</UserControl>

@@ -107,6 +107,10 @@
             <NativeMenuItemSeparator/>
             <NativeMenuItem Header="编辑主界面…" Click="NativeMenuItemEnterEditMode_OnClick" 
                             ci:NativeMenuItemAssist.IconSource="{ci:FluentIconSource &#xE7C9;}"/>
+            <NativeMenuItem Header="桌面组件：开启壁纸组件" Click="MenuItemToggleDesktopWidgets_OnClick"
+                            ci:NativeMenuItemAssist.IconSource="{ci:FluentIconSource &#xE7B8;}"/>
+            <NativeMenuItem Header="桌面组件：编辑模式" Click="MenuItemToggleDesktopEditMode_OnClick"
+                            ci:NativeMenuItemAssist.IconSource="{ci:FluentIconSource &#xE70F;}"/>
             <NativeMenuItem Header="应用设置…" Click="MenuItemSettings_OnClick" 
                             ci:NativeMenuItemAssist.IconSource="{ci:FluentIconSource &#xEF27;}"/>
             <NativeMenuItemSeparator />

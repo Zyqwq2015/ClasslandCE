@@ -1,0 +1,20 @@
+<Window x:Class="ClassIsland.Views.CeComponentSettingsWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.openxmlformats.org/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:ClassIsland.Controls"
+        mc:Ignorable="d"
+        Title="桌面组件设置"
+        Width="480" Height="560"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="Height">
+    <Grid RowDefinitions="*,Auto" Margin="0">
+        <ScrollViewer Grid.Row="0" Padding="0">
+            <ContentControl x:Name="SettingsHost" VerticalAlignment="Stretch"/>
+        </ScrollViewer>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8" Margin="12">
+            <Button x:Name="CancelButton" Content="关闭" Click="CloseButton_OnClick" MinWidth="80"/>
+        </StackPanel>
+    </Grid>
+</Window>

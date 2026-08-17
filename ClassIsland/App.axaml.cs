@@ -81,6 +81,7 @@ public partial class App : AppBase, IAppHost
     public Mutex? Mutex { get; set; }
     public bool IsMutexCreateNew { get; set; } = false;
     private ILogger<App>? Logger { get; set; }
+    private Views.CeDesktopWindow? _ceDesktopWindow;
     //public static IHost? Host;
 
 
@@ -851,6 +852,19 @@ public partial class App : AppBase, IAppHost
             AppStarted?.Invoke(this, EventArgs.Empty);
             GetService<IIpcService>().IpcProvider.StartServer();
             GetService<IIpcService>().JsonRoutedProvider.StartServer();
+            // Classland CE: 创建桌面组件窗口（透明、置底、承载壁纸浮动组件）
+            try
+            {
+                if (System.OperatingSystem.IsWindows())
+                {
+                    var ceDesktopWindow = GetService<Views.CeDesktopWindow>();
+                    _ceDesktopWindow = ceDesktopWindow;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "[CE] 创建桌面组件窗口失败");
+            }
             spanLoadMainWindow.Finish();
             transaction.Finish();
             SentrySdk.ConfigureScope(s => s.Transaction = null);

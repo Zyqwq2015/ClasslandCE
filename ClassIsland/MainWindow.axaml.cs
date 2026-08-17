@@ -1447,6 +1447,16 @@ public partial class MainWindow : Window, ITopmostEffectPlayer
         EnterEditMode();
     }
 
+    private void MenuItemToggleDesktopWidgets_OnClick(object? sender, EventArgs e)
+    {
+        SettingsService.Settings.CeIsDesktopWidgetsEnabled = !SettingsService.Settings.CeIsDesktopWidgetsEnabled;
+    }
+
+    private void MenuItemToggleDesktopEditMode_OnClick(object? sender, EventArgs e)
+    {
+        SettingsService.Settings.CeIsDesktopWidgetsEditMode = !SettingsService.Settings.CeIsDesktopWidgetsEditMode;
+    }
+
     private async void EnterEditMode()
     {
         if (ViewModel.IsEditMode || !await ManagementService.AuthorizeByLevel(ManagementService.CredentialConfig.EditSettingsAuthorizeLevel))
