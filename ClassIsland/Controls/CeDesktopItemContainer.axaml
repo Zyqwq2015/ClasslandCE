@@ -59,13 +59,13 @@
         <ContentPresenter x:Name="ContentHost"/>
 
         <!-- 8 个缩放控制点（编辑模式显示） -->
-        <Border x:Name="ResizeHandleTL" Classes="resize-handle" Cursor="SizeNWSE" IsVisible="False" IsHitTestVisible="True"/>
-        <Border x:Name="ResizeHandleTR" Classes="resize-handle" Cursor="SizeNESW" IsVisible="False" IsHitTestVisible="True"/>
-        <Border x:Name="ResizeHandleBL" Classes="resize-handle" Cursor="SizeNESW" IsVisible="False" IsHitTestVisible="True"/>
-        <Border x:Name="ResizeHandleBR" Classes="resize-handle" Cursor="SizeNWSE" IsVisible="False" IsHitTestVisible="True"/>
-        <Border x:Name="ResizeHandleL" Classes="resize-handle" Cursor="SizeWE" IsVisible="False" IsHitTestVisible="True"/>
-        <Border x:Name="ResizeHandleR" Classes="resize-handle" Cursor="SizeWE" IsVisible="False" IsHitTestVisible="True"/>
-        <Border x:Name="ResizeHandleT" Classes="resize-handle" Cursor="SizeNS" IsVisible="False" IsHitTestVisible="True"/>
-        <Border x:Name="ResizeHandleB" Classes="resize-handle" Cursor="SizeNS" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleTL" Classes="resize-handle" Cursor="TopLeftCorner" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleTR" Classes="resize-handle" Cursor="TopRightCorner" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleBL" Classes="resize-handle" Cursor="BottomLeftCorner" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleBR" Classes="resize-handle" Cursor="BottomRightCorner" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleL" Classes="resize-handle" Cursor="SizeWestEast" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleR" Classes="resize-handle" Cursor="SizeWestEast" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleT" Classes="resize-handle" Cursor="SizeNorthSouth" IsVisible="False" IsHitTestVisible="True"/>
+        <Border x:Name="ResizeHandleB" Classes="resize-handle" Cursor="SizeNorthSouth" IsVisible="False" IsHitTestVisible="True"/>
     </Grid>
 </UserControl>
