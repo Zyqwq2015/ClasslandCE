@@ -383,3 +383,7 @@ make_ico.ps1
 
 # 已废弃的独立语音控制原型工程（已被 ClassIsland/Services/VoiceControl 取代，不入库）
 ClassIsland.VoiceControl/
+
+# 构建产物与大文件（已从 git 历史清除，防止再次入库；GitHub 限制单文件 100MB）
+*.zip
+out/
