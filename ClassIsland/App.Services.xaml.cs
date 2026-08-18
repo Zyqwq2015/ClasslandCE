@@ -208,9 +208,7 @@ public partial class App
         services.AddComponent<GroupComponent>();
         services.AddComponent<StackComponent>();
         // Classland CE 增强组件
-        services.AddComponent<HourglassComponent, HourglassComponentSettingsControl>();
-        services.AddComponent<PomodoroComponent, PomodoroComponentSettingsControl>();
-        services.AddComponent<LessonShortcutComponent, LessonShortcutComponentSettingsControl>();
+        services.AddComponent<ShortcutCardComponent, ShortcutCardComponentSettingsControl>();
         services.AddComponent<VolumeLevelComponent, VolumeLevelComponentSettingsControl>();
         services.AddComponent<CameraFeedComponent, CameraFeedComponentSettingsControl>();
         // 提醒提供方

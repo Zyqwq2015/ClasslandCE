@@ -2667,9 +2667,11 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
     private int _ceQuickTimeLayoutBreakMinutes = 10;
     private int _ceQuickTimeLayoutClassCount = 8;
     private bool _ceIsAutoStartEnabled = false;
-    private bool _ceIsDeepThemeCustomization = false;
     private bool _ceIsDesktopWidgetsEnabled = false;
     private bool _ceIsDesktopWidgetsEditMode = false;
+    private bool _ceWidgetsDailyAutoToggle = false;
+    private TimeSpan _ceWidgetsAutoOnTime = new(7, 0, 0);
+    private TimeSpan _ceWidgetsAutoOffTime = new(22, 0, 0);
 
     /// <summary>
     /// 是否启用语音助手（Classland CE）
@@ -2933,15 +2935,43 @@ public class Settings : ObservableRecipient, ILessonControlSettings, INotificati
     }
 
     /// <summary>
-    /// 是否启用深度主题定制（启动时使用 CE 专属壁纸）
+    /// 是否启用桌面组件每日自动开关（按时间自动显示/隐藏桌面卡片层）
     /// </summary>
-    public bool CeIsDeepThemeCustomization
+    public bool CeWidgetsDailyAutoToggle
     {
-        get => _ceIsDeepThemeCustomization;
+        get => _ceWidgetsDailyAutoToggle;
         set
         {
-            if (value == _ceIsDeepThemeCustomization) return;
-            _ceIsDeepThemeCustomization = value;
+            if (value == _ceWidgetsDailyAutoToggle) return;
+            _ceWidgetsDailyAutoToggle = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 桌面组件每日自动开启时间
+    /// </summary>
+    public TimeSpan CeWidgetsAutoOnTime
+    {
+        get => _ceWidgetsAutoOnTime;
+        set
+        {
+            if (value.Equals(_ceWidgetsAutoOnTime)) return;
+            _ceWidgetsAutoOnTime = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>
+    /// 桌面组件每日自动关闭时间（支持跨午夜，如 22:00 开、08:00 关）
+    /// </summary>
+    public TimeSpan CeWidgetsAutoOffTime
+    {
+        get => _ceWidgetsAutoOffTime;
+        set
+        {
+            if (value.Equals(_ceWidgetsAutoOffTime)) return;
+            _ceWidgetsAutoOffTime = value;
             OnPropertyChanged();
         }
     }

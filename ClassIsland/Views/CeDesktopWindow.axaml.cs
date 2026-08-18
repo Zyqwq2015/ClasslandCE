@@ -16,19 +16,19 @@ using Microsoft.Extensions.Logging;
 namespace ClassIsland.Views;
 
 /// <summary>
-/// 桌面组件窗口（Classland CE）：全屏透明置底窗口，承载壁纸上的浮动组件。
+/// 桌面卡片窗口（Classland CE）：全屏透明置底窗口，承载桌面卡片浮动组件。
 /// <para>编辑模式下支持拖拽/缩放/删除/添加；非编辑模式组件可交互点击。</para>
 /// </summary>
 public partial class CeDesktopWindow : Window
 {
-    public static readonly string HourglassComponentId = "88CC3BF3-98BD-4BF9-B3B2-C66E042C7B0B";
-    public static readonly string LessonShortcutComponentId = "D80EBE4A-9F35-4D71-9184-FF3EA0926A2C";
+    public static readonly string ShortcutCardComponentId = "6F2C9D11-7E3A-4B58-9C2E-1D4F8A6B0C33";
 
     private CeDesktopLayoutService? _layoutService;
     private SettingsService? _settingsService;
     private bool _isEditMode;
     private bool _isClickSelecting;
     private Avalonia.Point _mouseDownPoint;
+    private DispatcherTimer? _dailyToggleTimer;
 
     #region Win32 - 挂到桌面（WorkerW）
 
@@ -62,6 +62,12 @@ public partial class CeDesktopWindow : Window
         _settingsService = App.GetService<SettingsService>();
         _settingsService!.Settings.PropertyChanged += SettingsOnPropertyChanged;
 
+        // 每日自动开关：每分钟检查一次时间，自动显示/隐藏桌面卡片层
+        _dailyToggleTimer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(1) };
+        _dailyToggleTimer.Tick += (_, _) => ApplyDailyAutoToggle();
+        _dailyToggleTimer.Start();
+        ApplyDailyAutoToggle();
+
         // 全屏透明窗口：构造函数就设好尺寸，避免首帧闪烁
         var screen = Screens.Primary;
         if (screen != null)
@@ -93,6 +99,29 @@ public partial class CeDesktopWindow : Window
             case nameof(SettingsService.Settings.CeIsDesktopWidgetsEditMode):
                 SetEditMode(_settingsService!.Settings.CeIsDesktopWidgetsEditMode);
                 break;
+        }
+    }
+
+    /// <summary>
+    /// 每日自动开关：按设定时间区间自动显示/隐藏桌面卡片层（支持跨午夜）。
+    /// </summary>
+    private void ApplyDailyAutoToggle()
+    {
+        if (_settingsService == null) return;
+        var s = _settingsService.Settings;
+        if (!s.CeWidgetsDailyAutoToggle) return;
+
+        var now = DateTime.Now.TimeOfDay;
+        var on = s.CeWidgetsAutoOnTime;
+        var off = s.CeWidgetsAutoOffTime;
+        var shouldShow = on <= off
+            ? now >= on && now < off
+            : now >= on || now < off; // 跨午夜，例如 22:00 开、08:00 关
+
+        if (shouldShow != s.CeIsDesktopWidgetsEnabled)
+        {
+            s.CeIsDesktopWidgetsEnabled = shouldShow;
+            Logger.LogInformation("[CE] 每日自动开关：{Action}桌面卡片层", shouldShow ? "显示" : "隐藏");
         }
     }
 
@@ -269,20 +298,9 @@ public partial class CeDesktopWindow : Window
         RepopulateCanvas();
     }
 
-    private void AddHourglassButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        AddComponentAtRandomPos(HourglassComponentId);
-    }
-
     private void AddShortcutButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        AddComponentAtRandomPos(LessonShortcutComponentId);
-    }
-
-    private void AddPomodoroButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        // 番茄时钟组件 ID
-        AddComponentAtRandomPos(FindComponentIdByName("番茄时钟"));
+        AddComponentAtRandomPos(ShortcutCardComponentId);
     }
 
     private void AddClockButton_OnClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -308,16 +326,9 @@ public partial class CeDesktopWindow : Window
     private void ShowAddMenu(Avalonia.Point pos)
     {
         var menu = new ContextMenu();
-        var addHourglass = new MenuItem { Header = "添加 时间沙漏" };
-        addHourglass.Click += (_, _) => AddComponentToCanvas(HourglassComponentId, pos.X, pos.Y);
-        var addShortcut = new MenuItem { Header = "添加 课件快捷方式" };
-        addShortcut.Click += (_, _) => AddComponentToCanvas(LessonShortcutComponentId, pos.X, pos.Y);
-        menu.Items.Add(addHourglass);
+        var addShortcut = new MenuItem { Header = "添加 桌面卡片" };
+        addShortcut.Click += (_, _) => AddComponentToCanvas(ShortcutCardComponentId, pos.X, pos.Y);
         menu.Items.Add(addShortcut);
-        var addPomodoro = new MenuItem { Header = "添加 番茄时钟" };
-        var pomodoroId = FindComponentIdByName("番茄时钟");
-        addPomodoro.Click += (_, _) => AddComponentToCanvas(pomodoroId, pos.X, pos.Y);
-        menu.Items.Add(addPomodoro);
         var addClock = new MenuItem { Header = "添加 时钟" };
         var clockId = FindComponentIdByName("时钟");
         addClock.Click += (_, _) => AddComponentToCanvas(clockId, pos.X, pos.Y);

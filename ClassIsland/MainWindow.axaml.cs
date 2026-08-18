@@ -248,36 +248,6 @@ public partial class MainWindow : Window, ITopmostEffectPlayer
         RulesetService.StatusUpdated += RulesetServiceOnStatusUpdated;
         TouchInFadingTimer.Tick += TouchInFadingTimerOnTick;
         IsRunningCompatibleMode = SettingsService.Settings.IsCompatibleWindowTransparentEnabled;
-        // Classland CE: 深度主题定制 → 设置 Windows 桌面壁纸（启动即应用，勾选即换、取消即还原）
-        if (OperatingSystem.IsWindows())
-        {
-            try
-            {
-                _ceOriginalWallpaper = ClassIsland.Services.WallpaperHelper.GetCurrentWallpaperPath();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning(ex, "[CE] 读取当前壁纸路径失败");
-            }
-        }
-        if (SettingsService.Settings.CeIsDeepThemeCustomization)
-        {
-            ApplyCeDesktopWallpaper();
-        }
-        SettingsService.Settings.PropertyChanged += (_, args) =>
-        {
-            if (args.PropertyName == nameof(SettingsService.Settings.CeIsDeepThemeCustomization))
-            {
-                if (SettingsService.Settings.CeIsDeepThemeCustomization)
-                {
-                    ApplyCeDesktopWallpaper();
-                }
-                else
-                {
-                    RestoreCeDesktopWallpaper();
-                }
-            }
-        };
         TaskBarIconService.MoreOptionsMenu = MoreOptionsMenu;
         WindowRuleService.ForegroundWindowChanged += WindowRuleServiceOnForegroundWindowChanged;
         HighFreqTopmostRecheckTimer.Tick += HighFreqTopmostRecheckTimerOnTick;
@@ -293,69 +263,6 @@ public partial class MainWindow : Window, ITopmostEffectPlayer
         TutorialService.Context["classisland.mainWindow.hasComponentWithSettings"] = HasComponentWithSettings;
         TutorialService.Context["classisland.mainWindow.hasContainerComponent"] = HasContainerComponent;
 #pragma warning restore CS8974 // 将方法组转换为非委托类型
-    }
-
-    [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
-    private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
-
-    private const int SpiSetDeskWallpaper = 0x0014;
-    private const int SpifUpdateIniFile = 0x01;
-    private const int SpifSendChange = 0x02;
-
-    private string? _ceOriginalWallpaper; // 启动时记录原壁纸，取消定制时还原
-
-    private void ApplyCeDesktopWallpaper()
-    {
-        if (!OperatingSystem.IsWindows()) return;
-        try
-        {
-            var src = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "CE-Wallpaper.png");
-            if (!System.IO.File.Exists(src))
-            {
-                Logger.LogWarning("[CE] 壁纸文件不存在: {Path}", src);
-                return;
-            }
-
-            // 写入数据目录而非临时目录，避免系统对临时文件壁纸的限制
-            var dataDir = ClassIsland.Core.CommonDirectories.AppRootFolderPath;
-            if (!System.IO.Directory.Exists(dataDir))
-                System.IO.Directory.CreateDirectory(dataDir);
-            var bmp = System.IO.Path.Combine(dataDir, "ce-wallpaper.bmp");
-            using (var img = System.Drawing.Image.FromFile(src))
-            {
-                // 使用 24bpp 无 alpha 的 BMP，Windows 壁纸兼容性最好
-                using var bmp24 = new System.Drawing.Bitmap(img.Width, img.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                using (var g = System.Drawing.Graphics.FromImage(bmp24))
-                {
-                    g.Clear(System.Drawing.Color.Black);
-                    g.DrawImage(img, 0, 0, img.Width, img.Height);
-                }
-                bmp24.Save(bmp, System.Drawing.Imaging.ImageFormat.Bmp);
-            }
-            SystemParametersInfo(SpiSetDeskWallpaper, 0, bmp, SpifUpdateIniFile | SpifSendChange);
-            Logger.LogInformation("[CE] 已设置桌面壁纸: {Path}", bmp);
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "[CE] 设置桌面壁纸失败");
-        }
-    }
-
-    private void RestoreCeDesktopWallpaper()
-    {
-        if (!OperatingSystem.IsWindows()) return;
-        try
-        {
-            if (!string.IsNullOrEmpty(_ceOriginalWallpaper) && System.IO.File.Exists(_ceOriginalWallpaper))
-            {
-                SystemParametersInfo(SpiSetDeskWallpaper, 0, _ceOriginalWallpaper, SpifUpdateIniFile | SpifSendChange);
-                Logger.LogInformation("[CE] 已还原桌面壁纸");
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "[CE] 还原桌面壁纸失败");
-        }
     }
 
     private void PostInit()

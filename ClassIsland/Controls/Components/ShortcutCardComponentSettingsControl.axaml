@@ -1,0 +1,62 @@
+<controls:ComponentBase x:TypeArguments="componentSettings:ShortcutCardComponentSettings"
+                        x:Class="ClassIsland.Controls.Components.ShortcutCardComponentSettingsControl"
+                        xmlns="https://github.com/avaloniaui"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:d="http://schemas.openxmlformats.org/expression/blend/2008"
+                        xmlns:local="clr-namespace:ClassIsland.Controls.Components"
+                        xmlns:controls="clr-namespace:ClassIsland.Core.Abstractions.Controls;assembly=ClassIsland.Core"
+                        xmlns:componentSettings="clr-namespace:ClassIsland.Models.ComponentSettings"
+                        xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                        xmlns:controls1="clr-namespace:ClassIsland.Controls"
+                        xmlns:controls3="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+                        mc:Ignorable="d"
+                        x:CompileBindings="False"
+                        d:DesignHeight="450" d:DesignWidth="800">
+    <ScrollViewer>
+        <StackPanel Classes="component-settings-container animated-intro"
+                    DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:ShortcutCardComponentSettingsControl}}">
+            <controls3:SettingsExpander IconSource="{ci:FluentIconSource &#xE8D4;}"
+                                        Header="卡片标题"
+                                        Description="显示在卡片图标下方的文字。">
+                <controls3:SettingsExpander.Footer>
+                    <TextBox Width="180" Text="{Binding Settings.Title, UpdateSourceTrigger=PropertyChanged}"/>
+                </controls3:SettingsExpander.Footer>
+            </controls3:SettingsExpander>
+
+            <controls3:SettingsExpander IconSource="{ci:FluentIconSource &#xE7C3;}"
+                                        Header="图标文件"
+                                        Description="支持 jpg / png / ico / bmp，留空则使用默认图标。">
+                <controls3:SettingsExpander.Footer>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" Width="320">
+                        <TextBox Grid.Column="0" Text="{Binding Settings.IconPath, UpdateSourceTrigger=PropertyChanged}" Watermark="图片路径或浏览选择"/>
+                        <controls1:FileBrowserButton Grid.Column="1" x:Name="IconBrowser"
+                                                    CurrentPath="{Binding Settings.IconPath, Mode=TwoWay}"
+                                                    FileSelected="IconBrowser_OnFileSelected" />
+                    </Grid>
+                </controls3:SettingsExpander.Footer>
+            </controls3:SettingsExpander>
+
+            <controls3:SettingsExpander IconSource="{ci:FluentIconSource &#xE8B7;}"
+                                        Header="目标路径"
+                                        Description="点击要打开的文件/程序/网址，支持 %USERPROFILE% 等环境变量。">
+                <controls3:SettingsExpander.Footer>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" Width="320">
+                        <TextBox Grid.Column="0" Text="{Binding Settings.TargetPath, UpdateSourceTrigger=PropertyChanged}" Watermark="文件/程序/网址"/>
+                        <controls1:FileBrowserButton Grid.Column="1" x:Name="TargetBrowser"
+                                                    CurrentPath="{Binding Settings.TargetPath, Mode=TwoWay}"
+                                                    FileSelected="TargetBrowser_OnFileSelected" />
+                    </Grid>
+                </controls3:SettingsExpander.Footer>
+            </controls3:SettingsExpander>
+
+            <controls3:SettingsExpander IconSource="{ci:FluentIconSource &#xE70F;}"
+                                        Header="命令行参数"
+                                        Description="可选的启动参数，一般留空。">
+                <controls3:SettingsExpander.Footer>
+                    <TextBox Width="180" Text="{Binding Settings.Arguments, UpdateSourceTrigger=PropertyChanged}"/>
+                </controls3:SettingsExpander.Footer>
+            </controls3:SettingsExpander>
+        </StackPanel>
+    </ScrollViewer>
+</controls:ComponentBase>

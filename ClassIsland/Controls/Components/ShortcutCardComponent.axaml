@@ -1,0 +1,51 @@
+<controls:ComponentBase x:TypeArguments="componentSettings:ShortcutCardComponentSettings"
+                        x:Class="ClassIsland.Controls.Components.ShortcutCardComponent"
+                        xmlns="https://github.com/avaloniaui"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:d="http://schemas.openxmlformats.org/expression/blend/2008"
+                        xmlns:local="clr-namespace:ClassIsland.Controls.Components"
+                        xmlns:controls="clr-namespace:ClassIsland.Core.Abstractions.Controls;assembly=ClassIsland.Core"
+                        xmlns:componentSettings="clr-namespace:ClassIsland.Models.ComponentSettings"
+                        xmlns:converters="clr-namespace:ClassIsland.Converters"
+                        xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                        mc:Ignorable="d"
+                        x:CompileBindings="False"
+                        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                        d:DesignHeight="150" d:DesignWidth="150">
+    <controls:ComponentBase.Resources>
+        <converters:FilePathToBitmapConverter x:Key="FilePathToBitmapConverter" />
+    </controls:ComponentBase.Resources>
+    <Border x:Name="CardBorder"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            CornerRadius="14"
+            BoxShadow="0 6 20 0 #40000000">
+        <Button Classes="card-button" Click="OpenButton_OnClick"
+                Background="Transparent" BorderThickness="0"
+                CornerRadius="14" Padding="10"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Button.Styles>
+                <Style Selector="Button.card-button:pointerover">
+                    <Setter Property="Background" Value="#1AFFFFFF"/>
+                </Style>
+                <Style Selector="Button.card-button:pressed">
+                    <Setter Property="Background" Value="#26FFFFFF"/>
+                </Style>
+            </Button.Styles>
+            <StackPanel Spacing="6" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid Width="64" Height="64" HorizontalAlignment="Center">
+                    <TextBlock Text="&#xE8D4;" FontFamily="Segoe Fluent Icons" FontSize="34"
+                               Foreground="{DynamicResource AccentFillColorDefaultBrush}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <Image Source="{Binding Settings.IconPath, Converter={StaticResource FilePathToBitmapConverter}}"
+                           Width="64" Height="64" Stretch="Uniform"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Grid>
+                <TextBlock Text="{Binding Settings.Title}" FontSize="13" FontWeight="Medium"
+                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                           HorizontalAlignment="Center" TextWrapping="Wrap" MaxWidth="130"
+                           TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+        </Button>
+    </Border>
+</controls:ComponentBase>

@@ -139,21 +139,11 @@
                 </StackPanel>
             </controls3:SettingsExpander>
 
-            <!-- ===== 3.5 深度主题定制 ===== -->
-            <controls1:IconText Glyph="&#xE7F4;" Text="深度主题定制" Margin="0 16 0 4" />
-            <controls3:SettingsExpander IconSource="{ci:FluentIconSource &#xE7F4;}"
-                                        Header="深度主题定制"
-                                        Description="勾选后立即把 Windows 桌面壁纸换成 ClassIsland CE 专属壁纸；取消勾选则还原原壁纸。">
-                <StackPanel Spacing="8" Margin="0 8 0 8">
-                    <ToggleSwitch IsChecked="{Binding ViewModel.SettingsService.Settings.CeIsDeepThemeCustomization, Mode=TwoWay}" />
-                </StackPanel>
-            </controls3:SettingsExpander>
-
             <!-- ===== 3.6 桌面组件 ===== -->
-            <controls1:IconText Glyph="&#xE7B8;" Text="桌面组件（壁纸浮动小组件）" Margin="0 16 0 4" />
+            <controls1:IconText Glyph="&#xE7B8;" Text="桌面卡片层" Margin="0 16 0 4" />
             <controls3:SettingsExpander IconSource="{ci:FluentIconSource &#xE7B8;}"
-                                        Header="启用桌面组件层"
-                                        Description="在 Windows 桌面上叠加一层透明组件层，可放置时间沙漏、课件快捷方式、番茄时钟等小组件，跟随桌面显示。">
+                                        Header="启用桌面卡片层"
+                                        Description="在 Windows 桌面上叠加一层透明卡片层，可放置自定义桌面卡片（快捷方式），跟随桌面显示。">
                 <StackPanel Spacing="8" Margin="0 8 0 8">
                     <ToggleSwitch IsChecked="{Binding ViewModel.SettingsService.Settings.CeIsDesktopWidgetsEnabled, Mode=TwoWay}" />
                     <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
@@ -173,6 +163,24 @@
                         · 拖动 8 个角/边控制点缩放
                         · 双击组件打开设置
                         · 右键空白处添加组件、删除所选组件
+                    </TextBlock>
+                </StackPanel>
+            </controls3:SettingsExpander>
+
+            <!-- ===== 3.7 每日自动开关 ===== -->
+            <controls3:SettingsExpander IconSource="{ci:FluentIconSource &#xE823;}"
+                                        Header="每日自动开关"
+                                        Description="按设定时间自动显示/隐藏桌面卡片层，例如上课期间显示、放学后隐藏。">
+                <StackPanel Spacing="8" Margin="0 8 0 8">
+                    <ToggleSwitch IsChecked="{Binding ViewModel.SettingsService.Settings.CeWidgetsDailyAutoToggle, Mode=TwoWay}" />
+                    <Grid ColumnDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="4">
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="开启时间"/>
+                        <TimePicker Grid.Column="1" SelectedTime="{Binding ViewModel.SettingsService.Settings.CeWidgetsAutoOnTime, Mode=TwoWay}"/>
+                        <TextBlock Grid.Column="2" VerticalAlignment="Center" Text="关闭时间"/>
+                        <TimePicker Grid.Column="3" SelectedTime="{Binding ViewModel.SettingsService.Settings.CeWidgetsAutoOffTime, Mode=TwoWay}"/>
+                    </Grid>
+                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}">
+                        时间区间内桌面卡片层自动显示；支持跨午夜（如 22:00 开、08:00 关）。
                     </TextBlock>
                 </StackPanel>
             </controls3:SettingsExpander>

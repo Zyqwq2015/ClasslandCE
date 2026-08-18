@@ -13,7 +13,7 @@ namespace ClassIsland.Services;
 
 /// <summary>
 /// 桌面组件布局服务（Classland CE）
-/// <para>管理壁纸层浮动组件的布局持久化与组件实例化。</para>
+/// <para>管理桌面卡片层浮动组件的布局持久化与组件实例化。</para>
 /// </summary>
 public class CeDesktopLayoutService(ILogger<CeDesktopLayoutService> logger, IComponentsService componentsService)
 {
@@ -52,16 +52,16 @@ public class CeDesktopLayoutService(ILogger<CeDesktopLayoutService> logger, ICom
             Logger.LogError(ex, "[CE] 加载桌面组件布局失败，使用默认布局");
             Layout = new Models.CeDesktopLayout();
         }
-        // 空布局时放入示例沙漏（位置右上，避开主屏中央）
+        // 空布局时放入一个示例桌面卡片（位置右上，避开主屏中央）
         if (Layout.Items.Count == 0)
         {
             var sample = new Models.CeDesktopItem
             {
-                ComponentId = "88cc3bf3-98bd-4bf9-b3b2-c66e042c7b0b",
+                ComponentId = "6F2C9D11-7E3A-4B58-9C2E-1D4F8A6B0C33",
                 X = 120,
                 Y = 160,
-                Width = 220,
-                Height = 180
+                Width = 180,
+                Height = 160
             };
             Layout.Items.Add(sample);
             SaveLayout();
