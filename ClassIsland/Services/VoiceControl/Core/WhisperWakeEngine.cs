@@ -63,7 +63,7 @@ public sealed class WhisperWakeEngine : VoiceWakeEngineBase
     /// <summary>默认下载的模型文件名（中文推荐 small 及以上；q5_0 为量化版，体积与精度折中）。</summary>
     public const string DefaultModelFileName = "ggml-small-q5_0.bin";
 
-    /// <summary>模型准备（含自动下载）过程中的状态广播，供 UI 显示进度。</summary>
+    /// <summary>模型准备过程中的状态广播（如缺失提示），供 UI 显示。</summary>
     public event Action<string>? ModelPreparationStatus;
 
     public WhisperWakeEngine(IVoiceLogger logger)
@@ -81,7 +81,7 @@ public sealed class WhisperWakeEngine : VoiceWakeEngineBase
 
     public override void Initialize()
     {
-        // 幂等：模型已加载过则跳过（例如先 EnsureModelAsync 再被编排器调用）。
+        // 幂等：模型已加载过则跳过（例如先 EnsureModel 再被编排器调用）。
         if (_processor != null) return;
 
         _modelPath = ResolveModelPath();
@@ -97,8 +97,8 @@ public sealed class WhisperWakeEngine : VoiceWakeEngineBase
                 _available = false;
                 _logger.Error(
                     $"未找到 Whisper 模型文件：{_modelPath}。" +
-                    "请从 HuggingFace 下载 ggml 模型（如 ggml-small.bin / ggml-small-q5_0.bin）并放入该路径，" +
-                    "或在设置页开启语音控制让其自动下载，中文推荐使用 small 及以上规模。");
+                    "请将 ggml 模型（如 ggml-small.bin / ggml-small-q5_0.bin）重命名为 ggml-model.bin 放入该路径，" +
+                    "或确认发布包已携带内置模型，中文推荐使用 small 及以上规模（详见 Assets/VoiceWake/README.txt）。");
                 return;
             }
 
@@ -121,10 +121,11 @@ public sealed class WhisperWakeEngine : VoiceWakeEngineBase
     }
 
     /// <summary>
-    /// 确保模型就绪：本地已有则直接加载；缺失则自动从镜像下载后再加载。
-    /// 返回模型是否可用。UI 可通过 <see cref="ModelPreparationStatus"/> 观察进度。
+    /// 确保模型就绪：本地已有则直接加载；缺失则返回 false，由调用方提示用户放入模型。
+    /// 发布包已内置模型（&lt;程序目录&gt;/Models/ggml-model.bin），不再运行时联网下载。
+    /// 详见 Assets/VoiceWake/README.txt。
     /// </summary>
-    public async Task<bool> EnsureModelAsync(CancellationToken ct)
+    public bool EnsureModel()
     {
         _modelPath = ResolveModelPath();
 
@@ -134,42 +135,14 @@ public sealed class WhisperWakeEngine : VoiceWakeEngineBase
             return _available;
         }
 
-        ModelPreparationStatus?.Invoke($"本地未找到模型，开始自动下载「{DefaultModelFileName}」…");
-        try
-        {
-            using var dl = new WhisperModelDownloader();
-            dl.StatusChanged += m =>
-            {
-                _logger.Info(m);
-                ModelPreparationStatus?.Invoke(m);
-            };
-            dl.Progress += (done, total) => ReportDownloadProgress(done, total);
-
-            await dl.DownloadAsync(DefaultModelFileName, _modelPath, ct);
-        }
-        catch (Exception ex)
-        {
-            _available = false;
-            _logger.Error("模型自动下载失败", ex);
-            ModelPreparationStatus?.Invoke(
-                $"模型自动下载失败：{ex.Message}。请手动下载 {DefaultModelFileName} 并放入 {_modelPath}（详见日志）。");
-            return false;
-        }
-
-        LoadModel();
-        return _available;
-    }
-
-    private long _lastReportedMb = -1;
-    private void ReportDownloadProgress(long done, long total)
-    {
-        if (total <= 0) return;
-        var mb = done / (1024 * 1024);
-        if (mb == _lastReportedMb) return;
-        _lastReportedMb = mb;
-        var totalMb = total / (1024 * 1024);
-        _logger.Info($"模型下载进度：{mb}MB / {totalMb}MB");
-        ModelPreparationStatus?.Invoke($"正在下载模型：{mb}MB / {totalMb}MB");
+        _available = false;
+        ModelPreparationStatus?.Invoke(
+            $"未找到 Whisper 模型：{_modelPath}。" +
+            "请将 ggml 模型（如 ggml-small-q5_0.bin）重命名为 ggml-model.bin 放入该目录后重启应用。");
+        _logger.Error(
+            $"未找到 Whisper 模型文件：{_modelPath}。" +
+            "发布包应已内置该模型；如缺失，请将 ggml 模型重命名为 ggml-model.bin 放入此目录（见 Assets/VoiceWake/README.txt）。");
+        return false;
     }
 
     public override void StartListening()

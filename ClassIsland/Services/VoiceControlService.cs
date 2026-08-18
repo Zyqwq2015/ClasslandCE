@@ -65,7 +65,7 @@ public class VoiceControlService : IHostedService
             _logger.LogInformation("[VoiceControl] 语音控制未启用（可在设置中开启）。");
             return Task.CompletedTask;
         }
-        // 模型可能需联网下载（一次性），放到后台执行，避免阻塞应用启动。
+        // 模型为内置（发布包已携带），加载放后台执行，避免阻塞应用启动。
         _ = Task.Run(BuildAndStartAsync, cancellationToken);
         return Task.CompletedTask;
     }
@@ -86,18 +86,18 @@ public class VoiceControlService : IHostedService
                     ? string.Empty
                     : s.CeVoiceWhisperModelPath
             };
-            // 模型准备（缺失则自动下载）进度广播到状态栏
+            // 模型缺失等状态广播到状态栏
             _engine.ModelPreparationStatus += msg => _statusViewModel.StatusMessage = msg;
 
             _statusViewModel.IsEnabled = true;
             _statusViewModel.StatusMessage = "正在准备语音模型…";
 
-            // 先确保模型就绪（自动下载），再启动监听
-            var modelReady = await _engine.EnsureModelAsync(CancellationToken.None);
+            // 先确保内置模型就绪，再启动监听
+            var modelReady = _engine.EnsureModel();
             if (!modelReady)
             {
                 _statusViewModel.StatusMessage =
-                    "Whisper 模型未就绪：自动下载失败，请手动下载模型后放入 Models 目录（详见日志）。";
+                    "Whisper 模型未就绪：未找到内置模型，请将 ggml 模型放入 Models 目录后重启（详见日志）。";
                 _logger.LogWarning("[VoiceControl] 模型未就绪，语音控制不可用。");
                 return;
             }

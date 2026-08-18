@@ -122,6 +122,9 @@
     <!-- Whisper 语音模型目录说明：发布到 <程序目录>/Models/README.txt，提示用户放置 ggml 模型 -->
     <ItemGroup>
         <None Include="Assets\VoiceWake\README.txt" Link="Models\README.txt" CopyToOutputDirectory="PreserveNewest" />
+        <!-- 内置模型：若站长已将 ggml 模型放入 Assets\VoiceWake\Models\ggml-model.bin，则随发布包发布到 <程序目录>/Models/ggml-model.bin。
+             模型约 150MB，超 GitHub 单文件 100MB 限制，不进 git，仅本地/发布包携带。Condition 保证文件缺失时不影响编译。 -->
+        <None Include="Assets\VoiceWake\Models\ggml-model.bin" Condition="Exists('Assets\VoiceWake\Models\ggml-model.bin')" Link="Models\ggml-model.bin" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
     <ItemGroup>
 <!--        <AvaloniaResource Include="Assets\**" />-->

@@ -387,3 +387,6 @@ ClassIsland.VoiceControl/
 # 构建产物与大文件（已从 git 历史清除，防止再次入库；GitHub 限制单文件 100MB）
 *.zip
 out/
+
+# Whisper 语音模型（约150MB，超 GitHub 单文件100MB限制，不进 git；仅本地/发布包携带）
+ClassIsland/Assets/VoiceWake/Models/ggml-model.bin
